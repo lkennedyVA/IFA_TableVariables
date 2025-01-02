@@ -6,7 +6,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 /****************************************************************************************
-	Name: uspFTBItemDailyReport
+	Name: [common].[uspKEYItemDailyReport]
 	CreatedBy: Larry Dugger
 	Description: This procedure reports on Item activity for the date range.
 
@@ -20,11 +20,14 @@ GO
 	Functions: [common].[ufnDownDimensionByOrgIdILTF]
 
 	History:
-		2020-10-05 - LBD - Created
-		2020-11-17 - LBD - Added ChannelName
-		2020-11-25 - LBD - Only return IdTypeID 25, added rulegroupcode
+		2022-11-12 - LBD - Created
+		2023-02-08 - LBD - Adjusted to return AccountNumber presented VALID-766
+		2023-03-02 - LBD - Adjusted from 9pm to 11pm VALID-826
+		2023-04-06 - LBD - Pushed to prod VALID-883 adjusted to run 10pm to 10pm
+		2023-07-12 - CBS - VALID-1112: Adjusted KeyBank Logic to use GETDATE()-2 + 22:00:00
+			if the report executes after midnight, else use the standard calculation
 *****************************************************************************************/
-ALTER PROCEDURE [common].[uspFTBItemDailyReport](
+ALTER   PROCEDURE [common].[uspKEYItemDailyReport](
 	 @piOrgId INT
 	,@pdtStartDate DATETIME2(7) = NULL
 	,@pdtEndDate DATETIME2(7) = NULL
@@ -48,50 +51,66 @@ BEGIN
 	DECLARE @iOrgId int = @piOrgId
 		,@dtStartDate datetime2(7) = @pdtStartDate
 		,@dtEndDate datetime2(7) = @pdtEndDate
+		,@tTime time --2023-07-12
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
 	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
-	WHERE OrgCode <> 'FTBTest'
+	WHERE OrgCode not like '%Test%'
 	ORDER BY ParentId, OrgId;
 
 	IF ISNULL(@dtStartDate,'') = ''
 	BEGIN
-		SET @dtStartDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-1)) + ' 21:00:00.0000000')
-		SET @dtEndDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE())) + ' 21:00:00.0000000')
+		--SET @dtStartDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-1)) + ' 22:00:00.0000000') --2023-07-12
+		--SET @dtEndDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE())) + ' 22:00:00.0000000') --2023-07-12
+
+		SET @tTime = CONVERT(time, GETDATE()); --2023-07-12
+
+		--Use the standard calculation... prior day 22:00 through current day 22:00
+		IF @tTime NOT BETWEEN '00:00:00.0000000' AND '08:00:00.0000000'
+		BEGIN
+			SET @dtStartDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-1)) + ' 22:00:00.0000000');
+			SET @dtEndDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE())) + ' 22:00:00.0000000');
+		END
+		--Otherwise use two days ago 22:00 through prior day 22:00
+		ELSE IF @tTime BETWEEN '00:00:00.0000000' AND '08:00:00.0000000'
+		BEGIN
+			SET @dtStartDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-2)) + ' 22:00:00.0000000');
+			SET @dtEndDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-1)) + ' 22:00:00.0000000');
+		END
 	END
+	
 	OPEN SYMMETRIC KEY VALIDSYMKEY DECRYPTION BY ASYMMETRIC KEY VALIDASYMKEY
 	SELECT distinct p.DateActivated as 'DateActivated'
 		,p.OrgId as 'OrgId'
 		,p.ProcessKey as 'TransactionKey' 
 		,ClientRequestId
 		,ClientRequestId2
-		,CONVERT(NVARCHAR(100),CONVERT(NVARCHAR(50),DECRYPTBYKEY(cix.IdEncrypted ))) as 'Customer Identifier'
-		,i.ClientItemId as 'ClientItem ID'
-		,i.ItemKey as 'TransactionItemID'
+		,CONVERT(NVARCHAR(100),CONVERT(NVARCHAR(50),DECRYPTBYKEY(cix.IdEncrypted ))) as 'CustomerIdentifier'
+		,i.ClientItemId as 'ClientItemID'
+		,i.ItemKey as 'TransactionItemID'		
+		,i.Rulebreak as 'ItemRuleBreak'
+		,ISNULL(rbd.Code,'') as 'ItemRuleBreakCode' --2023-02-08
+		,ca.Code as 'ClientResponse'
 		,i.CheckAmount as 'ItemAmount'
-		,i.Rulebreak as 'Item Rule Break Code'
-		,ca.Code as 'Client Response'
-		,dol.ChannelName as 'Channel'
-		,UPPER(pt.[Code]) as 'ProcessType'
-		,CASE WHEN ISNULL(rbd.Code,'0') = '0' THEN '0' ELSE rbd.Code END as 'RuleGroupCode' --2020-11-25
+		,i.Fee as 'Fee'
+		,a.AccountNumber as 'CustomerAccountNumber'
 	FROM [ifa].[Process] p WITH (READUNCOMMITTED)
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) on p.ProcessId = i.ProcessId
 	INNER JOIN [customer].[CustomerIdXref] cix WITH (READUNCOMMITTED) on p.CustomerId = cix.CustomerId
 																	AND cix.IdTypeId = 25 
 																	AND cix.StatusFlag = 1
-																	--2020-11-25 AND ((p.ProcessTypeId = 0 AND cix.IdTypeId = 25)
-																	--2020-11-25 OR (p.ProcessTypeId = 2 AND cix.IdTypeId = 3))
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
+--	INNER JOIN [customer].[Account] a WITH (READUNCOMMITTED) on p.CustomerId = a.CustomerId
+	INNER JOIN [customer].[Account] a WITH (READUNCOMMITTED) on p.AccountId = a.AccountId  --2023-02-08
+														AND p.CustomerId = a.CustomerId
+														AND a.AccountTypeId = 1 
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
 	CROSS APPLY @DownOrgList dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId
-		--AND ClientItemId NOT LIKE 'DEPO%'
-		--AND ClientRequestId2 NOT LIKE 'Hal%'
 	ORDER BY p.DateActivated, i.ClientItemId;
 	CLOSE SYMMETRIC KEY VALIDSYMKEY 
 END

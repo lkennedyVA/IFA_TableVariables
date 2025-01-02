@@ -6,25 +6,25 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 /****************************************************************************************
-	Name: uspIdTypeStatusFlagSetOut
+	Name: uspMiscTypeStatusFlagClearOut
 	CreatedBy: Larry Dugger
 	Date: 2015-05-07
-	Description: This procedure will Activate the IdType record
-	Tables: [common].[IdType]
+	Description: This procedure will Deactivate the MiscType record
+	Tables: [common].[MiscType]
 
 	History:
 		2015-05-07 - LBD - Created
 		2017-06-03 - LBD - Modified, removed use of archive tables
 *****************************************************************************************/
-ALTER PROCEDURE [common].[uspIdTypeStatusFlagSetOut](
+ALTER PROCEDURE [common].[uspMiscTypeStatusFlagClearOut](
 	 @pnvUserName NVARCHAR(100) = 'N/A'
-	,@piIdTypeId INT OUTPUT
+	,@piMiscTypeId INT OUTPUT
 )
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @IdType table(
-		 IdTypeId int
+	DECLARE @MiscType table(
+		 MiscTypeId int
 		,Code nvarchar(25)
 		,[Name] nvarchar(50)
 		,Descr nvarchar(255)
@@ -39,11 +39,11 @@ BEGIN
 	SET @iCurrentTransactionLevel = @@TRANCOUNT;
 	BEGIN TRANSACTION
 	BEGIN TRY
-		UPDATE [common].[IdType]
-		SET StatusFlag = 1
+		UPDATE [common].[MiscType]
+		SET StatusFlag = 0
 			,DateActivated = SYSDATETIME()
 			,UserName = @pnvUserName
-		OUTPUT deleted.IdTypeId
+		OUTPUT deleted.MiscTypeId
 			,deleted.Code
 			,deleted.[Name]
 			,deleted.Descr
@@ -51,9 +51,9 @@ BEGIN
 			,deleted.StatusFlag
 			,deleted.DateActivated
 			,deleted.UserName
-		INTO @IdType
-		WHERE IdTypeId = @piIdTypeId;
-		--INSERT INTO [archive].[IdType](IdTypeId
+		INTO @MiscType
+		WHERE MiscTypeId = @piMiscTypeId;
+		--INSERT INTO [archive].[MiscType](MiscTypeId
 		--	,Code
 		--	,Name
 		--	,Descr
@@ -63,7 +63,7 @@ BEGIN
 		--	,UserName
 		--	,DateArchived
 		--)
-		--SELECT IdTypeId
+		--SELECT MiscTypeId
 		--	,Code
 		--	,Name
 		--	,Descr
@@ -72,18 +72,18 @@ BEGIN
 		--	,DateActivated
 		--	,UserName
 		--	,SYSDATETIME()
-		--FROM @IdType
+		--FROM @MiscType
 	END TRY
 	BEGIN CATCH
 		IF @@TRANCOUNT > @iCurrentTransactionLevel
 			ROLLBACK TRANSACTION;
 		EXEC [error].[uspLogErrorDetailInsertOut] @psSchemaName = @sSchemaName, @piErrorDetailId=@iErrorDetailId OUTPUT;
-		SET @piIdTypeId = -1 * @iErrorDetailId; --return the errordetailId negative (indicates an error occurred)
+		SET @piMiscTypeId = -1 * @iErrorDetailId; --return the errordetailId negative (indicates an error occurred)
 	END CATCH;
 	IF @@TRANCOUNT > @iCurrentTransactionLevel
 	BEGIN
 		COMMIT TRANSACTION;
-		SELECT @piIdTypeId = IdTypeId
-		FROM @IdType;
+		SELECT @piMiscTypeId = MiscTypeId
+		FROM @MiscType;
 	END
 END
