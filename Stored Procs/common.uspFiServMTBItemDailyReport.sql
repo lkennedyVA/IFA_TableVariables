@@ -1,6 +1,6 @@
 USE [IFA]
 GO
-/****** Object:  StoredProcedure [common].[uspFiServMTBItemDailyReport]    Script Date: 1/2/2025 8:43:47 AM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

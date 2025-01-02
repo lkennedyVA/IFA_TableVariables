@@ -1,6 +1,6 @@
 USE [IFA]
 GO
-/****** Object:  StoredProcedure [common].[uspIdTypeStatusFlagClearOut]    Script Date: 1/2/2025 9:21:18 AM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

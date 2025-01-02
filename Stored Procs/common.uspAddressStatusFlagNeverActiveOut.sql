@@ -1,6 +1,6 @@
 USE [IFA]
 GO
-/****** Object:  StoredProcedure [common].[uspAddressStatusFlagNeverActiveOut]    Script Date: 1/2/2025 6:12:43 AM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

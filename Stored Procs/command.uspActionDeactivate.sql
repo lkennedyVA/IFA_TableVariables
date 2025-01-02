@@ -1,7 +1,6 @@
 USE [IFA]
 GO
 
-/****** Object:  StoredProcedure [command].[uspActionDeactivate]    Script Date: 1/2/2025 5:48:09 AM ******/
 SET ANSI_NULLS ON
 GO
 

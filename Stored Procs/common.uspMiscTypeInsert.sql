@@ -6,28 +6,28 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 /****************************************************************************************
-	Name: uspCipherTypeInsert
+	Name: uspMiscTypeInsert
 	CreatedBy: Larry Dugger
 	Date: 2015-05-07
 	Description: This procedure will insert a new record
-	Tables: [common].[CipherType]
+	Tables: [common].[MiscType]
 	History:
 		2015-05-07 - LBD - Created
 *****************************************************************************************/
-ALTER PROCEDURE [common].[uspCipherTypeInsert](
+ALTER PROCEDURE [common].[uspMiscTypeInsert](
 	 @pnvCode NVARCHAR(25)
 	,@pnvName NVARCHAR(50)
    ,@pnvDescr NVARCHAR(255)
    ,@piDisplayOrder INT
    ,@piStatusFlag INT
 	,@pnvUserName NVARCHAR(100) = 'N/A'
-	,@piCipherTypeId INT OUTPUT
+	,@piMiscTypeId INT OUTPUT
 )
 AS
 BEGIN
 	SET NOCOUNT ON;
-   DECLARE @CipherType table (
-		CipherTypeId int
+   DECLARE @MiscType table (
+		 MiscTypeId int
 		,Code nvarchar(25)
 		,Name nvarchar(50)
 		,Descr nvarchar(255)
@@ -42,8 +42,8 @@ BEGIN
    SET @iCurrentTransactionLevel = @@TRANCOUNT;
    BEGIN TRANSACTION
    BEGIN TRY
-      INSERT INTO [common].[CipherType]
-         OUTPUT inserted.CipherTypeId
+      INSERT INTO [common].[MiscType]
+         OUTPUT inserted.MiscTypeId
             ,inserted.Code
             ,inserted.Name
             ,inserted.Descr
@@ -51,7 +51,7 @@ BEGIN
             ,inserted.StatusFlag
             ,inserted.DateActivated 
 				,inserted.UserName
-         INTO @CipherType
+         INTO @MiscType
       SELECT @pnvCode
 			,@pnvName
          ,@pnvDescr
@@ -64,12 +64,12 @@ BEGIN
       IF @@TRANCOUNT > @iCurrentTransactionLevel
          ROLLBACK TRANSACTION;
 		EXEC [error].[uspLogErrorDetailInsertOut] @psSchemaName = @sSchemaName, @piErrorDetailId=@iErrorDetailId OUTPUT;
-		SET @piCipherTypeId = -1 * @iErrorDetailId; --return the errordetailId negative (indicates an error occurred)
+		SET @piMiscTypeId = -1 * @iErrorDetailId; --return the errordetailId negative (indicates an error occurred)
    END CATCH;
    IF @@TRANCOUNT > @iCurrentTransactionLevel
    BEGIN
       COMMIT TRANSACTION;
-      SELECT @piCipherTypeId = CipherTypeId
-      FROM @CipherType;
+      SELECT @piMiscTypeId = MiscTypeId
+      FROM @MiscType;
 	END
 END

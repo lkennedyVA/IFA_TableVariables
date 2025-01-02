@@ -1,6 +1,5 @@
 USE [IFA]
 GO
-/****** Object:  StoredProcedure [command].[uspActionTypeInsertOut]    Script Date: 1/2/2025 5:50:25 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
