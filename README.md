@@ -1,1 +1,0 @@
-# IFA_TableVariables
