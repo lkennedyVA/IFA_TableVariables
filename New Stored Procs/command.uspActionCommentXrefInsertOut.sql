@@ -27,46 +27,46 @@ ALTER   PROCEDURE [command].[uspActionCommentXrefInsertOut](
 )
 AS
 BEGIN
-	SET NOCOUNT ON;
-	DECLARE @tblActionCommentXref TABLE (
-		 ActionCommentXrefId bigint
-	);
-	DECLARE @iErrorDetailId int
-		,@sSchemaName sysname = N'command';
+SET NOCOUNT ON;
 
-	BEGIN TRY
-		IF NOT EXISTS (SELECT 'X'
-					FROM [command].[ActionCommentXref] 
-					WHERE ActionId = @pbiActionId
-						AND CommentId = @pbiCommentId)
-		BEGIN
-			INSERT INTO [command].[ActionCommentXref] (
-				ActionId
-				,CommentId
-				,StatusFlag
-				,DateActivated
-			)
-			OUTPUT inserted.ActionCommentXrefId
-			INTO @tblActionCommentXref
-			SELECT @pbiActionId
-				,@pbiCommentId
-				,1 AS StatusFlag
-				,SYSDATETIME() AS DateActivated;
-			
-			SELECT @pbiActionCommentXrefId = ActionCommentXrefId 
-			FROM @tblActionCommentXref;
-		END
-		ELSE 
-		BEGIN
-			RAISERROR ('ActionCommentXrefId already exists for ActionId and CommentId', 16, 1);
-			RETURN
-		END	
-	END TRY
-	BEGIN CATCH
-		EXEC [error].[uspLogErrorDetailInsertOut] @psSchemaName = @sSchemaName, @piErrorDetailId=@iErrorDetailId OUTPUT;
-		SET @pbiActionCommentXrefId = -1 * @iErrorDetailId; --return the errordetailid negative (indicates an error occurred)
-		THROW
-	END CATCH
+DECLARE @iErrorDetailId INT;
+DECLARE @sSchemaName SYSNAME = N'command';
+
+CREATE TABLE #tblActionCommentXref (
+    ActionCommentXrefId BIGINT
+);
+
+BEGIN TRY
+    -- Attempt to insert only if the record doesn't already exist
+    MERGE INTO [command].[ActionCommentXref] AS target
+    USING (
+        VALUES (@pbiActionId, @pbiCommentId, 1, SYSDATETIME())
+		  ) AS source (ActionId, CommentId, StatusFlag, DateActivated) ON target.ActionId = source.ActionId AND target.CommentId = source.CommentId
+    WHEN NOT MATCHED THEN
+        INSERT (ActionId, CommentId, StatusFlag, DateActivated)
+        VALUES (source.ActionId, source.CommentId, source.StatusFlag, source.DateActivated)
+    OUTPUT inserted.ActionCommentXrefId INTO #tblActionCommentXref;
+
+    -- Retrieve the ActionCommentXrefId if a new row was inserted
+    IF EXISTS (SELECT 1 FROM #tblActionCommentXref)
+    BEGIN
+        SELECT @pbiActionCommentXrefId = ActionCommentXrefId FROM #tblActionCommentXref;
+    END
+    ELSE
+    BEGIN
+        RAISERROR ('ActionCommentXrefId already exists for ActionId and CommentId', 16, 1);
+        RETURN;
+    END
+END TRY
+BEGIN CATCH
+    EXEC [error].[uspLogErrorDetailInsertOut] 
+        @psSchemaName = @sSchemaName, 
+        @piErrorDetailId = @iErrorDetailId OUTPUT;
+
+    SET @pbiActionCommentXrefId = -1 * @iErrorDetailId;
+
+    THROW;
+END CATCH;
 END
 GO
 
