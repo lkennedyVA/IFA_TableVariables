@@ -23,6 +23,7 @@ GO
 		2017-06-01 - LBD - Created
 		2018-03-14 - LBD - Modified, uses more efficient function
 		2019-11-13 - LBD - Modified, removed references in table list, that aren't used
+		2025-01-08 - LXK - Removed table Variable to local temp table, BMO proc written the same, implementing same change
 *****************************************************************************************/
 ALTER   PROCEDURE [common].[uspItemDailyDetailReport](
 	 @piOrgId INT
@@ -32,7 +33,7 @@ ALTER   PROCEDURE [common].[uspItemDailyDetailReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	CREATE TABLE #DownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -46,7 +47,7 @@ BEGIN
 	DECLARE @iOrgId int = @piOrgId
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
+	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
 	SELECT LevelId,ParentId,OrgId,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	ORDER BY ParentId, OrgId;
@@ -79,7 +80,7 @@ BEGIN
 												OR rpr.RCResult = 1)
 	INNER JOIN [condensed].[LadderRungCondensed] lrc on rpr.LadderDBProcessXrefId = lrc.LadderDBProcessXrefId
 	INNER JOIN [common].[ClientAccepted] ca on i.ClientAcceptedId = ca.ClientAcceptedId
-	CROSS APPLY @DownOrgList dol
+	CROSS APPLY #DownOrgList dol
 	WHERE p.DateActivated BETWEEN @pdtStartDate AND @pdtEndDate
 		AND dol.OrgId = p.OrgId;
 END

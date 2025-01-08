@@ -21,6 +21,7 @@ GO
 	History:
 		2021-09-20 - LBD - Created CCF2676
 		2022-05-26 - CBS - VALID:255 - Replace Item.Amount with Item.CheckAmount
+		2025-01-08 - LXK - Removed table Variable to local temp table, BMO proc written the same, implementing same change
 *****************************************************************************************/
 ALTER PROCEDURE [common].[uspFNBPAItemDailyReport](
 	 @piOrgId INT = 172436
@@ -30,7 +31,7 @@ ALTER PROCEDURE [common].[uspFNBPAItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	CREATE TABLE #DownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -47,7 +48,7 @@ BEGIN
 		,@dtEndDate datetime2(7) = @pdtEndDate
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
+	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode <> 'FNBTest'
@@ -77,7 +78,7 @@ BEGIN
 	INNER JOIN [customer].[CustomerIdXref] cix WITH (READUNCOMMITTED) on p.CustomerId = cix.CustomerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY @DownOrgList dol
+	CROSS APPLY #DownOrgList dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND cix.IdTypeId = 25
