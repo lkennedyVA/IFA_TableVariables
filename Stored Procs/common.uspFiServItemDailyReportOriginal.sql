@@ -45,6 +45,7 @@ GO
 			[common].[ufnNotEligibleAndCarveOutILTFDeux]
 		2021-03-30 - LBD - Corrected default returns for FTB and TD
 		2021-09-20 - LBD - Added FNBPA to the FiServe Report CCF2676
+		2025-01-08 - LXK - Removed table Variable to local temp table, BMO proc written the same, implementing same change
 *****************************************************************************************/
 ALTER   PROCEDURE [common].[uspFiServItemDailyReportOriginal](
 	 @piOrgId INT
@@ -54,7 +55,7 @@ ALTER   PROCEDURE [common].[uspFiServItemDailyReportOriginal](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	CREATE TABLE #DownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -83,7 +84,7 @@ BEGIN
 				ELSE ''
 			END;
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode not like '%Test%'
@@ -119,7 +120,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN @DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
 	CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	WHERE @nvOrgName = N'PNC Bank'
 		AND p.DateActivated >= @dtStartDate 
@@ -149,7 +150,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN @DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
 	--2021-03-30 CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	OUTER APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	WHERE @nvOrgName = N'TD Bank'
@@ -178,7 +179,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN @DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
 	CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	WHERE @nvOrgName = 'MTB Bank' --2020-11-18
 		AND p.DateActivated >= @dtStartDate 
@@ -227,7 +228,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN @DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
 	INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
 	LEFT OUTER JOIN [ifa].[Misc] m WITH (READUNCOMMITTED) on p.ProcessId = m.ProcessId	--2020-11-30
 															AND m.MiscTypeId = 8 --PRDCT-CD
@@ -259,7 +260,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN @DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
 	OUTER APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	WHERE @nvOrgName = N'FNBPA Bank'
 		AND p.DateActivated >= @dtStartDate 

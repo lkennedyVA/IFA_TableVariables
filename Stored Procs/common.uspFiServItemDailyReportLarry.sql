@@ -24,6 +24,7 @@ GO
 	History:
 		2017-02-08 - LBD - Recreated using [common].[uspFiServItemDailyReport], that 
 		was renamed to [common].[uspFiServItemDailyReportOrginal] 
+		2025-01-08 - LXK - Updated this proc to match the other for consistency
 *****************************************************************************************/
 ALTER   PROCEDURE [common].[uspFiServItemDailyReportLarry](
 	 @piOrgId INT
@@ -33,7 +34,7 @@ ALTER   PROCEDURE [common].[uspFiServItemDailyReportLarry](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	CREATE TABLE #DownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int

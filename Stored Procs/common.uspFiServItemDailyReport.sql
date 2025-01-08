@@ -36,6 +36,7 @@ GO
 		2024-04-03 - CBS - VALID-1754: Added support for BMO
 		2024-10-16 - CBS - VALID-2137: Added support for CMB
 		2024-12-02 - CBS - VALID-2231: Added RtlaScore for CMB header
+		2025-01-08 - LXK - Updated this proc to match the other for consistency
 *****************************************************************************************/
 ALTER PROCEDURE [common].[uspFiServItemDailyReport](
 	 @piOrgId INT
@@ -45,7 +46,7 @@ ALTER PROCEDURE [common].[uspFiServItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @tblDownOrgList table(
+	CREATE TABLE #tblDownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int
