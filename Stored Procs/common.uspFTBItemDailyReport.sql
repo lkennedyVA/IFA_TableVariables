@@ -23,6 +23,7 @@ GO
 		2020-10-05 - LBD - Created
 		2020-11-17 - LBD - Added ChannelName
 		2020-11-25 - LBD - Only return IdTypeID 25, added rulegroupcode
+		2025-01-08 - LXK - Removed table Variable to local temp table, BMO proc written the same, implementing same change
 *****************************************************************************************/
 ALTER PROCEDURE [common].[uspFTBItemDailyReport](
 	 @piOrgId INT
@@ -32,7 +33,7 @@ ALTER PROCEDURE [common].[uspFTBItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	CREATE TABLE #DownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -50,7 +51,7 @@ BEGIN
 		,@dtEndDate datetime2(7) = @pdtEndDate
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode <> 'FTBTest'
@@ -86,7 +87,7 @@ BEGIN
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 	INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY @DownOrgList dol
+	CROSS APPLY #DownOrgList dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId
