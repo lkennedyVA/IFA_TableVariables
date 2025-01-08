@@ -22,6 +22,7 @@ GO
 
 	History:
 		2022-07-18 - LBD - Created
+		2025-01-08 - LXK - Removed table Variable to local temp table, BMO proc written the same, implementing same change
 *****************************************************************************************/
 ALTER   PROCEDURE [common].[uspFiServMTBItemDailyReport](
 	 @piOrgId INT
@@ -32,7 +33,7 @@ ALTER   PROCEDURE [common].[uspFiServMTBItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	CREATE TABLE #DownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int primary key
@@ -52,7 +53,7 @@ BEGIN
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization')
 		,@nvHeader nvarchar(4000) = @pnvHeader;
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode not like '%Test%'
@@ -81,7 +82,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN @DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
 	CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate

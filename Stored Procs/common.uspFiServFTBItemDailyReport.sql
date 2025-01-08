@@ -23,6 +23,7 @@ GO
 
 	History:
 		2022-07-18 - LBD - Created
+		2025-01-08 - LXK - Removed table Variable to local temp table, BMO proc written the same, implementing same change
 *****************************************************************************************/
 ALTER   PROCEDURE [common].[uspFiServFTBItemDailyReport](
 	 @piOrgId INT
@@ -34,7 +35,7 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	DECLARE @DownOrgList table(
+	CREATE TABLE #DownOrgList(
 		 LevelId int
 		,ParentId int
 		,OrgId int primary key
@@ -47,7 +48,7 @@ BEGIN
 		,DateActivated datetime2(7)
 		,ChannelName nvarchar(50)
 	);
-	DECLARE @CleanMisc table(
+	CREATE TABLE #CleanMisc(
 		 ProcessId bigint primary key
 		,[PrdctCd] int
 	);
@@ -58,13 +59,13 @@ BEGIN
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization')
 		,@nvHeader nvarchar(4000) = @pnvHeader;
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode not like '%Test%'
 	ORDER BY ParentId, OrgId;
 
-	INSERT INTO @CleanMisc (ProcessId, [PrdctCd])
+	INSERT INTO #CleanMisc (ProcessId, [PrdctCd])
 	SELECT p.ProcessId, TRY_CONVERT(INT,SUBSTRING([common].[ufnCleanNumber](m.MiscInfo), 1, 25),0) 'PRDCT-CD' --'0' not being used below
 	FROM  [ifa].[Process] p WITH (READUNCOMMITTED)
 	INNER JOIN [ifa].[Misc] m WITH (READUNCOMMITTED) on p.ProcessId = m.ProcessId	
@@ -110,9 +111,9 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN @DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
 	INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
-	LEFT OUTER JOIN @CleanMisc m on p.ProcessId = m.ProcessId
+	LEFT OUTER JOIN #CleanMisc m on p.ProcessId = m.ProcessId
 	OUTER APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
