@@ -36,8 +36,8 @@ ALTER PROCEDURE [common].[uspCMBItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	drop table if exists #tblDownOrgListCMB;
-	create table #tblDownOrgListCMB(
+	drop table if exists #ItemDailyReportCMB;
+	create table #ItemDailyReportCMB(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -59,7 +59,7 @@ BEGIN
 
 	SELECT @nvOrgName = [Name] FROM [organization].[Org] WHERE OrgId = @iOrgId;
 		
-	INSERT INTO #tblDownOrgListCMB(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #ItemDailyReportCMB(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode NOT LIKE '%Test%'
@@ -98,7 +98,7 @@ BEGIN
 	LEFT OUTER JOIN [ValidbankLogging].[dbo].[TransactionTailLog] ttl WITH (READUNCOMMITTED) ON p.ProcessKey = ttl.TransactionKey --2024-12-02
 																						AND ttl.Step = 'VaeRtla'
 																						AND ttl.Descr = 'Prediction'
-	CROSS APPLY #tblDownOrgListCMB dol
+	CROSS APPLY #ItemDailyReportCMB dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId

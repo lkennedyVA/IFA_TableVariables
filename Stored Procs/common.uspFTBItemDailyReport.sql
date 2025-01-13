@@ -33,8 +33,8 @@ ALTER PROCEDURE [common].[uspFTBItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	drop table if exists #DownOrgListFTB
-	CREATE TABLE #DownOrgListFTB(
+	drop table if exists #ItemDailyReportFTB
+	CREATE TABLE #ItemDailyReportFTB(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -52,7 +52,7 @@ BEGIN
 		,@dtEndDate datetime2(7) = @pdtEndDate
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
-	INSERT INTO #DownOrgListFTB(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #ItemDailyReportFTB(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode <> 'FTBTest'
@@ -88,7 +88,7 @@ BEGIN
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 	INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY #DownOrgListFTB dol
+	CROSS APPLY #ItemDailyReportFTB dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId
