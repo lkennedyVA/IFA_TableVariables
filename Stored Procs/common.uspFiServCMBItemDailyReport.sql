@@ -34,7 +34,8 @@ ALTER PROCEDURE [common].[uspFiServCMBItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #tblDownOrgList (
+	drop table if exists #FiServCMBItemDaily;
+	CREATE TABLE #FiServCMBItemDaily (
 		 LevelId int
 		,ParentId int
 		,OrgId int primary key
@@ -53,7 +54,7 @@ BEGIN
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization')
 		,@nvHeader nvarchar(4000) = @pnvHeader;
 
-	INSERT INTO #tblDownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #FiServCMBItemDaily(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode NOT LIKE '%Test%'
@@ -83,7 +84,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN #tblDownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #FiServCMBItemDaily dol ON p.OrgId = dol.OrgId
 	LEFT OUTER JOIN [ValidbankLogging].[dbo].[TransactionTailLog] ttl WITH (READUNCOMMITTED) ON p.ProcessKey = ttl.TransactionKey --2024-12-02
 																						AND ttl.Step = 'VaeRtla'
 																						AND ttl.Descr = 'Prediction'

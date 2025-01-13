@@ -37,7 +37,8 @@ ALTER   PROCEDURE [common].[uspItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #DownOrgList(
+	drop table if exists #ItemDailyReport
+	CREATE TABLE #ItemDailyReport(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -81,7 +82,7 @@ BEGIN
 			SET @nvHeader = @nvHeader + N',Channel,ProcessType,RuleGroupCode';
 	END
 
-	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #ItemDailyReport(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode not like '%Test%'
@@ -119,7 +120,7 @@ BEGIN
 		INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 		INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 		INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-		INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
+		INNER JOIN #ItemDailyReport dol ON p.OrgId = dol.OrgId
 		CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 		WHERE @nvOrgName = N'PNC Bank'
 			AND p.DateActivated >= @dtStartDate 
@@ -147,7 +148,7 @@ BEGIN
 		INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 		INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 		INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-		INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
+		INNER JOIN #ItemDailyReport dol ON p.OrgId = dol.OrgId
 		CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 		WHERE @nvOrgName = N'TD Bank'
 			AND p.DateActivated >= @dtStartDate 
@@ -175,7 +176,7 @@ BEGIN
 		INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 		INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 		INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-		INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
+		INNER JOIN #ItemDailyReport dol ON p.OrgId = dol.OrgId
 		CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 		WHERE @nvOrgName = 'MTB Bank'
 			AND p.DateActivated >= @dtStartDate 
@@ -220,7 +221,7 @@ BEGIN
 		INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 		INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 		INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-		INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
+		INNER JOIN #ItemDailyReport dol ON p.OrgId = dol.OrgId
 		INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
 		LEFT OUTER JOIN [ifa].[Misc] m WITH (READUNCOMMITTED) on p.ProcessId = m.ProcessId
 																AND m.MiscTypeId = 8 --PRDCT-CD
@@ -252,7 +253,7 @@ BEGIN
 		INNER JOIN [customer].[CustomerIdXref] cix WITH (READUNCOMMITTED) on p.CustomerId = cix.CustomerId
 		INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 		LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-		CROSS APPLY #DownOrgList dol
+		CROSS APPLY #ItemDailyReport dol
 		WHERE @nvOrgName = N'PNC Bank'
 			AND p.DateActivated >= @dtStartDate 
 			AND p.DateActivated < @dtEndDate
@@ -278,7 +279,7 @@ BEGIN
 		INNER JOIN [customer].[CustomerIdXref] cix WITH (READUNCOMMITTED) on p.CustomerId = cix.CustomerId
 		INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 		LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-		CROSS APPLY #DownOrgList dol
+		CROSS APPLY #ItemDailyReport dol
 		WHERE @nvOrgName in (N'MTB Bank', N'TD Bank')
 			AND p.DateActivated >= @dtStartDate 
 			AND p.DateActivated < @dtEndDate
@@ -307,7 +308,7 @@ BEGIN
 		INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 		INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
 		LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-		CROSS APPLY #DownOrgList dol
+		CROSS APPLY #ItemDailyReport dol
 		WHERE @nvOrgName = N'FTB Bank'
 			AND p.DateActivated >= @dtStartDate 
 			AND p.DateActivated < @dtEndDate

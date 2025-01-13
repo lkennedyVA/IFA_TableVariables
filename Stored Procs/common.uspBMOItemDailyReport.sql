@@ -28,6 +28,7 @@ GO
 		2024-03-25 - CBS - VALID-1726: Created
 		2024-04-11 - CBS - VALID-1777: Update the field length for ClientRequestId and ClientRequestId2 
 			to nvarchar(50)
+		2025-01-09 - LXK - Replaced table variable with local temp table
 *****************************************************************************************/
 ALTER PROCEDURE [common].[uspBMOItemDailyReport](
 	 @piOrgId INT 
@@ -38,7 +39,8 @@ ALTER PROCEDURE [common].[uspBMOItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	drop table if exists #DownOrgListBMO;
+	create table #DownOrgListBMO(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -51,7 +53,8 @@ BEGIN
 		,DateActivated datetime2(7)
 		,ChannelName nvarchar(50)
 	);
-	DECLARE @tblDetail table (
+	drop table if exists #tblDetailBMO
+	create table #tblDetailBMO (
 		 RowId int identity(1,1)
 		,DateActivated datetime2(7)
 		,OrgId int
@@ -80,7 +83,7 @@ BEGIN
 
 	SELECT @nvOrgName = [Name] FROM [organization].[Org] WHERE OrgId = @iOrgId;
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #DownOrgListBMO(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode <> 'BMOTest'
@@ -93,7 +96,7 @@ BEGIN
 		FROM [common].[ufnGetReportDatesByClient](@nvOrgName);
 	   	  
 	OPEN SYMMETRIC KEY VALIDSYMKEY DECRYPTION BY ASYMMETRIC KEY VALIDASYMKEY
-	INSERT INTO @tblDetail (
+	INSERT INTO #tblDetailBMO (
 		 DateActivated 
 		,OrgId 
 		,TransactionKey 
@@ -130,7 +133,7 @@ BEGIN
 														AND p.CustomerId = a.CustomerId
 														AND a.AccountTypeId = 1 
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY @DownOrgList dol
+	CROSS APPLY #DownOrgListBMO dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId
@@ -138,7 +141,7 @@ BEGIN
 	CLOSE SYMMETRIC KEY VALIDSYMKEY;
 	
 	SELECT @nvFooter = CONVERT(NVARCHAR(10),'9') +','+ @pnvFileName +','+ CONVERT(NVARCHAR(25),ISNULL(COUNT(1),0))
-	FROM @tblDetail;
+	FROM #tblDetailBMO;
 
 	--Putting it all together in preparation for the Txt output
 	SELECT @nvHeader as Txt
@@ -159,7 +162,7 @@ BEGIN
 		CONVERT(NVARCHAR(25),ClientResponse) + ','+
 		CONVERT(NVARCHAR(25),ItemAmount) AS Txt
 		--CONVERT(NVARCHAR(25),OnUs) AS Txt
-	FROM @tblDetail) a
+	FROM #tblDetailBMO) a
 	UNION ALL 
 	SELECT @nvFooter;
 

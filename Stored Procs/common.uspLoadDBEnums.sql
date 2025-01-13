@@ -25,7 +25,7 @@ ALTER PROCEDURE [common].[uspLoadDBEnums]
 AS
 BEGIN
 	SET NOCOUNT ON;
-
+	drop table if exists #DBEnums
 	CREATE TABLE #DBEnums(
 		 OrgId int not null
 		,[Value] nvarchar(255) not null

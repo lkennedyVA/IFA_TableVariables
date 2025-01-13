@@ -19,6 +19,7 @@ GO
 
 	History:
 		2018-04-05 - CBS  - Created, from Validbank
+		2025-01-09 - LXK - Replaced table variable with local temp table
 *****************************************************************************************/
 ALTER PROCEDURE [common].[uspCurrentRuleDetailSelectByOrgId](
 	 @piOrgId INT 
@@ -26,7 +27,8 @@ ALTER PROCEDURE [common].[uspCurrentRuleDetailSelectByOrgId](
 AS 
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @tblCurrentRuleDetail TABLE (
+	drop table if exists #tblCurrentRuleDetailByOrg;
+	create table #tblCurrentRuleDetailByOrg(
 		[OrgId] [int] NOT NULL,
 		[OrgName] [nvarchar](50) NULL,
 		[OrgLevel] [nvarchar](25) NULL,
@@ -98,7 +100,7 @@ BEGIN
 	);
 	DECLARE @iOrgId int = @piOrgId
 
-   	INSERT INTO @tblCurrentRuleDetail(OrgId,OrgName,OrgLevel,RuleOrgXrefId,RuleId,RuleCode,Descr,CheckTypeId,Name,
+   	INSERT INTO #tblCurrentRuleDetailByOrg(OrgId,OrgName,OrgLevel,RuleOrgXrefId,RuleId,RuleCode,Descr,CheckTypeId,Name,
 		EnrollmentFlag,OverridableFlag,LevelId,
 		AccountNotFound,AgeFloor,AllCheckTypes,AmountCeiling,AmountFloor,AmountVariation,Approved,
 		CheckMax,CheckNumberFloor,CheckPayeeHistory,ClientSpecific,DaysToBegin,DaysToEnd,DaysToSpan,DaysToSpan2,
@@ -131,7 +133,7 @@ BEGIN
 		SET ReportName = ISNULL(TRY_CONVERT(nvarchar(255), OrgName + ' - ' + OrgLevel), 'N/A')
 			,RuleGroupCode = rg.Code
 			,RuleGroupDesc = SUBSTRING(rg.Descr,1,50) 
-	FROM @tblCurrentRuleDetail crd
+	FROM #tblCurrentRuleDetailByOrg crd
 	INNER JOIN [rule].[RuleOrgXref] rox 
 		ON crd.RuleOrgXrefId = rox.RuleOrgXrefId
 	INNER JOIN [rule].[RuleGroup] rg 
@@ -146,6 +148,6 @@ BEGIN
 		NoData,NonMemberBank,NotesToView,NumberVariation,Overlay,PayeeBlackList,PayeePayerTranCeiling,PayeePayerTranFloor,PayeeTranCeiling,
 		PayerBlackList,PayerTranCeiling,Percent3090,RoutingAccountCheckFlag,RoutingNumber,SafeListFloor,
 		TaxSeasonBegin,TaxSeasonEnd,TranAllowed,TranCeiling,TranFloor,TranFloor2,VerifyCheckSeries
-	FROM @tblCurrentRuleDetail;
+	FROM #tblCurrentRuleDetailByOrg;
 
 END

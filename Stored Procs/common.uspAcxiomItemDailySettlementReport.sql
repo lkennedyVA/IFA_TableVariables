@@ -19,6 +19,7 @@ GO
 			uncomment this line located below on line 61
 				WHERE OrgCode not like '%Test%'  
 			before pushing to UAT
+		2025-01-09 - LXK - Replaced table variable with local temp table
 *****************************************************************************************/
 ALTER     PROCEDURE [common].[uspAcxiomItemDailySettlementReport](
 	 @piOrgId INT 
@@ -28,7 +29,8 @@ ALTER     PROCEDURE [common].[uspAcxiomItemDailySettlementReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @DownOrgList table(
+	drop table if exists #DownOrgListACX;
+	create table #DownOrgListACX(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -58,7 +60,7 @@ BEGIN
 		,@mFileAmt money					--sum of all Face Amt (CheckAmount)
 		,@nvHeader nvarchar(4000) = N''		--built using detail info;
 
-	INSERT INTO @DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #DownOrgListACX(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	--WHERE OrgCode not like '%Test%'  Restore before pushing to UAT
@@ -75,7 +77,7 @@ BEGIN
 		CONVERT(nvarchar(13), ISNULL(SUM(vw.FaceAmt),0.00)) + @ncDelimiter +
 		@ncCreateDate 
 	FROM [common].[vwAcxiomItemDailySettlementDetail] vw
-	INNER JOIN @DownOrgList dol ON vw.D2COrgId = dol.OrgId
+	INNER JOIN #DownOrgListACX dol ON vw.D2COrgId = dol.OrgId
 	WHERE DateCommitted >= @dtStartDate 
 		AND DateCommitted < @dtEndDate
 
@@ -86,7 +88,7 @@ BEGIN
 		dol.ExternalCode +			--@ncDelimiter +
 		Txt2 as Txt									
 	FROM [common].[vwAcxiomItemDailySettlementDetail] vw
-	INNER JOIN @DownOrgList dol ON vw.D2COrgId = dol.OrgId
+	INNER JOIN #DownOrgListACX dol ON vw.D2COrgId = dol.OrgId
 	WHERE vw.DateCommitted >= @dtStartDate 
 		AND vw.DateCommitted < @dtEndDate
 	ORDER BY vw.DateCommitted) a

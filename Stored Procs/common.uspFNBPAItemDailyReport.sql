@@ -31,7 +31,8 @@ ALTER PROCEDURE [common].[uspFNBPAItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #DownOrgList(
+	drop table if exists #DownOrgListFNBPA
+	CREATE TABLE #DownOrgListFNBPA(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -48,7 +49,7 @@ BEGIN
 		,@dtEndDate datetime2(7) = @pdtEndDate
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
-	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
+	INSERT INTO #DownOrgListFNBPA(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode <> 'FNBTest'
@@ -78,7 +79,7 @@ BEGIN
 	INNER JOIN [customer].[CustomerIdXref] cix WITH (READUNCOMMITTED) on p.CustomerId = cix.CustomerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY #DownOrgList dol
+	CROSS APPLY #DownOrgListFNBPA dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND cix.IdTypeId = 25

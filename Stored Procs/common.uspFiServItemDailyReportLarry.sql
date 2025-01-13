@@ -34,7 +34,9 @@ ALTER   PROCEDURE [common].[uspFiServItemDailyReportLarry](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #DownOrgList(
+	/*Nothing is using this table and can be removed*/
+	drop table if exists #FiServItemDailyReportLarry
+	CREATE TABLE #FiServItemDailyReportLarry(
 		 LevelId int
 		,ParentId int
 		,OrgId int

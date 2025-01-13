@@ -37,7 +37,8 @@ ALTER   PROCEDURE [common].[uspKEYItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #DownOrgList(
+	drop table if exists #DownOrgListKEY
+	CREATE TABLE #DownOrgListKEY(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -56,7 +57,7 @@ BEGIN
 		,@tTime time --2023-07-12
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
-	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #DownOrgListKEY(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode not like '%Test%'
@@ -109,7 +110,7 @@ BEGIN
 														AND p.CustomerId = a.CustomerId
 														AND a.AccountTypeId = 1 
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY #DownOrgList dol
+	CROSS APPLY #DownOrgListKEY dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId

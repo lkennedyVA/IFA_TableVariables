@@ -22,6 +22,7 @@ GO
 
 	History:
 		2024-01-23 - CBS - VALID-1568: Created
+		2025-01-09 - LXK - Replaced table variable with local temp table
 *****************************************************************************************/
 ALTER   PROCEDURE [common].[uspBBItemDailyReport](
 	 @piOrgId INT
@@ -31,7 +32,8 @@ ALTER   PROCEDURE [common].[uspBBItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	DECLARE @tblDownOrgList table(
+	drop table if exists #tblDownOrgListBB;
+	create table #tblDownOrgListBB(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -52,7 +54,7 @@ BEGIN
 
 	SELECT @nvOrgName = [Name] FROM [organization].[Org] WHERE OrgId = @iOrgId;
 		
-	INSERT INTO @tblDownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #tblDownOrgListBB(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode NOT LIKE '%Test%'
@@ -84,7 +86,7 @@ BEGIN
 																	AND cix.StatusFlag = 1
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY @tblDownOrgList dol
+	CROSS APPLY #tblDownOrgListBB dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId
