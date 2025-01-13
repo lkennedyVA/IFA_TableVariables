@@ -33,7 +33,8 @@ ALTER PROCEDURE [common].[uspFiServBMOItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #DownOrgList (
+	drop table if exists #FiServBMOItemDaily;
+	CREATE TABLE #FiServBMOItemDaily (
 		 LevelId int
 		,ParentId int
 		,OrgId int primary key
@@ -52,7 +53,7 @@ BEGIN
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization')
 		,@nvHeader nvarchar(4000) = @pnvHeader;
 
-	INSERT INTO #DownOrgList(LevelId, ParentId, OrgId, OrgCode, OrgName, ExternalCode, TypeId, [Type], StatusFlag, DateActivated, ChannelName)
+	INSERT INTO #FiServBMOItemDaily(LevelId, ParentId, OrgId, OrgCode, OrgName, ExternalCode, TypeId, [Type], StatusFlag, DateActivated, ChannelName)
 	SELECT LevelId, ParentId, OrgId, OrgCode, OrgName, ExternalCode, TypeId, [Type], StatusFlag,DateActivated, [common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId, @iOrgDimensionId)
 	WHERE OrgCode NOT LIKE '%Test%'
@@ -81,7 +82,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #FiServBMOItemDaily dol ON p.OrgId = dol.OrgId
 	OUTER APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate

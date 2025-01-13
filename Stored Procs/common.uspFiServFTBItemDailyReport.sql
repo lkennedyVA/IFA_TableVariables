@@ -35,7 +35,8 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	CREATE TABLE #DownOrgList(
+	drop table if exists #FiServFTBItemDaily;
+	CREATE TABLE #FiServFTBItemDaily(
 		 LevelId int
 		,ParentId int
 		,OrgId int primary key
@@ -48,6 +49,7 @@ BEGIN
 		,DateActivated datetime2(7)
 		,ChannelName nvarchar(50)
 	);
+	drop table id exists #CleanMisc
 	CREATE TABLE #CleanMisc(
 		 ProcessId bigint primary key
 		,[PrdctCd] int
@@ -59,7 +61,7 @@ BEGIN
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization')
 		,@nvHeader nvarchar(4000) = @pnvHeader;
 
-	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #FiServFTBItemDaily(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode not like '%Test%'
@@ -111,7 +113,7 @@ BEGIN
 	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
 	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
 	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-	INNER JOIN #DownOrgList dol ON p.OrgId = dol.OrgId
+	INNER JOIN #FiServFTBItemDaily dol ON p.OrgId = dol.OrgId
 	INNER JOIN [common].[ProcessType] pt WITH (READUNCOMMITTED) on p.ProcessTypeId = pt.ProcessTypeId
 	LEFT OUTER JOIN #CleanMisc m on p.ProcessId = m.ProcessId
 	OUTER APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 

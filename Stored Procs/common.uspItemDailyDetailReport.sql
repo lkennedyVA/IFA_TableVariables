@@ -33,7 +33,8 @@ ALTER   PROCEDURE [common].[uspItemDailyDetailReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	CREATE TABLE #DownOrgList(
+	drop table if exists #ItemDailyDetailReport
+	CREATE TABLE #ItemDailyDetailReport(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -47,7 +48,7 @@ BEGIN
 	DECLARE @iOrgId int = @piOrgId
 		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
 
-	INSERT INTO #DownOrgList(LevelId,ParentId,OrgId,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
+	INSERT INTO #ItemDailyDetailReport(LevelId,ParentId,OrgId,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated)
 	SELECT LevelId,ParentId,OrgId,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	ORDER BY ParentId, OrgId;
@@ -80,7 +81,7 @@ BEGIN
 												OR rpr.RCResult = 1)
 	INNER JOIN [condensed].[LadderRungCondensed] lrc on rpr.LadderDBProcessXrefId = lrc.LadderDBProcessXrefId
 	INNER JOIN [common].[ClientAccepted] ca on i.ClientAcceptedId = ca.ClientAcceptedId
-	CROSS APPLY #DownOrgList dol
+	CROSS APPLY #ItemDailyDetailReport dol
 	WHERE p.DateActivated BETWEEN @pdtStartDate AND @pdtEndDate
 		AND dol.OrgId = p.OrgId;
 END
