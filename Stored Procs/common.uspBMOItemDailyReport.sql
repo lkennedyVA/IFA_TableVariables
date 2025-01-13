@@ -39,8 +39,8 @@ ALTER PROCEDURE [common].[uspBMOItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	drop table if exists #DownOrgListBMO;
-	create table #DownOrgListBMO(
+	drop table if exists #ItemDailyReportBMO;
+	create table #ItemDailyReportBMO(
 		 LevelId int
 		,ParentId int
 		,OrgId int
@@ -83,7 +83,7 @@ BEGIN
 
 	SELECT @nvOrgName = [Name] FROM [organization].[Org] WHERE OrgId = @iOrgId;
 
-	INSERT INTO #DownOrgListBMO(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
+	INSERT INTO #ItemDailyReportBMO(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
 	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
 	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
 	WHERE OrgCode <> 'BMOTest'
@@ -133,7 +133,7 @@ BEGIN
 														AND p.CustomerId = a.CustomerId
 														AND a.AccountTypeId = 1 
 	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY #DownOrgListBMO dol
+	CROSS APPLY #ItemDailyReportBMO dol
 	WHERE p.DateActivated >= @dtStartDate 
 		AND p.DateActivated < @dtEndDate
 		AND dol.OrgId = p.OrgId
