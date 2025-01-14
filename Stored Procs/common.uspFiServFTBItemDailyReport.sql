@@ -49,7 +49,7 @@ BEGIN
 		,DateActivated datetime2(7)
 		,ChannelName nvarchar(50)
 	);
-	drop table id exists #CleanMisc
+	drop table if exists #CleanMisc
 	CREATE TABLE #CleanMisc(
 		 ProcessId bigint primary key
 		,[PrdctCd] int
