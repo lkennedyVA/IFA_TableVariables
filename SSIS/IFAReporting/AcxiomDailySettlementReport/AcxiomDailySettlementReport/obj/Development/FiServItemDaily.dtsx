@@ -1,0 +1,471 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/19/2016 12:46:22 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="810113-RPTDB4"
+  DTS:CreatorName="VALIDRS\LDugger"
+  DTS:DTSID="{F84C09E0-1575-473E-9B0C-57499F2AD73A}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5467.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="PNCItemDaily"
+  DTS:PackageType="5"
+  DTS:VersionBuild="92"
+  DTS:VersionGUID="{E36998CB-353C-47D5-B70D-7980984E0AF1}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CSVOutputFile]"
+      DTS:CreationName="FLATFILE"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{61DE1A1B-DF72-43B5-BDD1-B07B3231B98A}"
+      DTS:ObjectName="CSVOutputFile">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::sConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="T:\DBA\Team\LKennedy\CMB\CMB003113_Daily__VAL_TXN.csv">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x000D__x000A_"
+              DTS:MaximumWidth="4000"
+              DTS:DataType="130"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Txt"
+              DTS:DTSID="{03451069-FA4A-4E4C-AABD-6007B12E1A38}"
+              DTS:CreationName="" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{77084D38-96F6-4AA3-BA78-4743BC3D3218}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::sOutputFileDestinationDirectory] + &quot;\\&quot; +  @[$Project::sOutputFileNamePrefix] + @[User::sFileDateTimeStamp] +@[$Project::sOutputFileNameSuffix]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sConnectionString">
+      <DTS:VariableValue
+        DTS:DataType="8">T:\DBA\Team\LKennedy\CMB\CMB003113_Daily__VAL_TXN.csv</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C457FD67-B492-4D8A-89C9-9796ED1E05F1}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;[common].[uspFiServItemDailyReport]&quot;+ &quot; @piOrgId = &quot;+ @[$Project::sOrgId]+&quot;, @pdtStartDate = NULL, @pdtEndDate = NULL;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sExecutableSQL">
+      <DTS:VariableValue
+        DTS:DataType="8">[common].[uspFiServItemDailyReport] @piOrgId = 181434, @pdtStartDate = NULL, @pdtEndDate = NULL;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7F63D3E4-4A1D-41FA-8E66-4C007A11ADF7}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sFileDateTimeStamp">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Execute FiservItemDailyReport"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{27B2F1B6-582D-41AB-BADD-DFA80CED78F6}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute FiservItemDailyReport"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Execute FiservItemDailyReport\FiServe Daily"
+              componentClassID="Microsoft.FlatFileDestination"
+              contactInfo="Flat File Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Flat File Destination"
+              localeId="1033"
+              name="FiServe Daily"
+              validateExternalMetadata="False"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether the data will overwrite or append to the destination file."
+                  name="Overwrite">true</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the text to write to the destination file before any data is written."
+                  expressionType="Notify"
+                  name="Header" />
+                <property
+                  dataType="System.Boolean"
+                  description="When text qualifier is enabled, specifies whether the text qualifier in the data written to the destination file will be escaped or not."
+                  name="EscapeQualifier">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Execute FiservItemDailyReport\FiServe Daily.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[CSVOutputFile]"
+                  connectionManagerRefId="Package.ConnectionManagers[CSVOutputFile]"
+                  name="FlatFileConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Execute FiservItemDailyReport\FiServe Daily.Inputs[Flat File Destination Input]"
+                  hasSideEffects="true"
+                  name="Flat File Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Execute FiservItemDailyReport\FiServe Daily.Inputs[Flat File Destination Input].Columns[Txt]"
+                      cachedDataType="wstr"
+                      cachedLength="4000"
+                      cachedName="Txt"
+                      externalMetadataColumnId="Package\Execute FiservItemDailyReport\FiServe Daily.Inputs[Flat File Destination Input].ExternalColumns[Txt]"
+                      lineageId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Output].Columns[Txt]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Execute FiservItemDailyReport\FiServe Daily.Inputs[Flat File Destination Input].ExternalColumns[Txt]"
+                      dataType="wstr"
+                      length="4000"
+                      name="Txt" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+            <component
+              refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="Retrieve FiservItemDaily"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::sExecutableSQL</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Connections[OleDbConnection]"
+                  connectionManagerID="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Prod]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Output].Columns[Txt]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Output].ExternalColumns[Txt]"
+                      length="4000"
+                      lineageId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Output].Columns[Txt]"
+                      name="Txt"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Output].ExternalColumns[Txt]"
+                      dataType="wstr"
+                      length="4000"
+                      name="Txt" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Error Output].Columns[Txt]"
+                      dataType="wstr"
+                      length="4000"
+                      lineageId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Error Output].Columns[Txt]"
+                      name="Txt" />
+                    <outputColumn
+                      refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Execute FiservItemDailyReport.Paths[OLE DB Source Output]"
+              endId="Package\Execute FiservItemDailyReport\FiServe Daily.Inputs[Flat File Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Get date string"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{79DCD3FA-77E4-4BA6-A741-7E4D7956A093}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get date string"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}"
+          SQLTask:SqlStatementSource="SELECT Dt =[import].[ufnGetDateString](?)"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="Dt"
+            SQLTask:DtsVariableName="User::sFileDateTimeStamp" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@pnvClientCode"
+            SQLTask:DtsVariableName="$Project::sClient"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="130"
+            SQLTask:ParameterSize="50" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Send Mail Task"
+      DTS:CreationName="Microsoft.SendMailTask"
+      DTS:DelayValidation="True"
+      DTS:Description="Send Mail Task"
+      DTS:DTSID="{EE7BB1F7-FE8A-42B6-932F-DE202DA31E0B}"
+      DTS:ExecutableType="Microsoft.SendMailTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Send Mail Task"
+      DTS:TaskContact="Send Mail Task; Microsoft Corporation; SQL Server 2016; Â© 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="FileAttachments">@[$Project::sClient] == "FTB"  ? @[User::sConnectionString]  : ""</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="MessageSource">"File can be found here: " + @[User::sConnectionString]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="Subject">@[$Project::sDBName]  == "IFA" ? "Daily Prod FiServ"+ @[$Project::sClient] +" File": "Daily Stage FiServ"+ @[$Project::sClient] +" File"</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ToLine">@[$Project::sEmailRecipient]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SendMailTask:SendMailTaskData
+          SendMailTask:SMTPServer="{6A894694-6289-43C2-AE08-6940F2D92CD6}"
+          SendMailTask:From="DBSupport@ValidAdvantage.com"
+          SendMailTask:To="csharp@validadvantage.com"
+          SendMailTask:Subject="Daily Prod FiServCMB File"
+          SendMailTask:MessageSource="File can be found here: T:\DBA\Team\LKennedy\CMB\CMB003113_Daily__VAL_TXN.csv" xmlns:SendMailTask="www.microsoft.com/sqlserver/dts/tasks/sendmailtask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{677C9E43-2787-49D2-A7B8-2EDC2F013A95}"
+      DTS:From="Package\Get date string"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Execute FiservItemDailyReport" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{42C036BB-4F62-4330-8BB0-A89C98B45FB1}"
+      DTS:From="Package\Execute FiservItemDailyReport"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Send Mail Task" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="223,42"
+          Id="Package\Execute FiservItemDailyReport"
+          TopLeft="5.50000000000003,107.5" />
+        <NodeLayout
+          Size="149,42"
+          Id="Package\Get date string"
+          TopLeft="42.5,5.5" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Send Mail Task"
+          TopLeft="42,209.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="117,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="117,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Execute FiservItemDailyReport">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="195,43"
+          Id="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily"
+          TopLeft="5.50000000000001,6.36666665116946" />
+        <NodeLayout
+          Size="140,42"
+          Id="Package\Execute FiservItemDailyReport\FiServe Daily"
+          TopLeft="29,108.5" />
+        <EdgeLayout
+          Id="Package\Execute FiservItemDailyReport.Paths[OLE DB Source Output]"
+          TopLeft="100.916666666667,49.0333333178361">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,59.4666666821639"
+              Start="0,0"
+              End="0,51.9666666821639">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,51.9666666821639" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Execute FiservItemDailyReport\Retrieve FiservItemDaily">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

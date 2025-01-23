@@ -1,0 +1,498 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/19/2016 12:46:22 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="810113-RPTDB4"
+  DTS:CreatorName="VALIDRS\LDugger"
+  DTS:DTSID="{6BAD5851-9508-40ED-8353-C997BB05175A}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5467.0"
+  DTS:LocaleID="1033"
+  DTS:MaxErrorCount="5"
+  DTS:ObjectName="AcxiomItemDailySettlement"
+  DTS:PackageType="5"
+  DTS:VersionBuild="119"
+  DTS:VersionGUID="{9BE48230-4CDF-4562-8CBD-F1E79B9CF13A}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Acxiom Item Daily Settlement]"
+      DTS:CreationName="FLATFILE"
+      DTS:DTSID="{203AA38F-C8AF-4624-A606-259012CD8C6D}"
+      DTS:ObjectName="Acxiom Item Daily Settlement">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::sConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000A_"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="T:\DBA\Team\LKennedy\CMB\CMB003113_Daily_20220505160000.csv">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x000A_"
+              DTS:MaximumWidth="4000"
+              DTS:DataType="130"
+              DTS:ObjectName="TXT"
+              DTS:DTSID="{7DFB5A25-C37C-4993-96DD-94BFDDA6994F}"
+              DTS:CreationName="" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4FBE49C7-9BBA-43C4-AAB4-794F7E83D361}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(DT_DBTIMESTAMP2, 7)((DT_WSTR,20)(DT_DBDATE)(GETDATE()) + &quot; 00:00:00.0000000&quot;)"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="pdtEndDate">
+      <DTS:VariableValue
+        DTS:DataType="7">1/23/2025</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6766F6D2-2EB8-4EB5-B767-33EA8775BD81}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="(DT_DBTIMESTAMP2, 7)((DT_WSTR,20)(DT_DBDATE)(DATEADD(&quot;day&quot;, -1, GETDATE())) + &quot; 00:00:00.0000000&quot;)"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="pdtStartDate">
+      <DTS:VariableValue
+        DTS:DataType="7">1/22/2025</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{86E58CF4-6807-445A-ABA3-C0250B720460}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="piOrgID">
+      <DTS:VariableValue
+        DTS:DataType="3">181434</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3451AA06-5CC4-464C-B39E-F7173638DA38}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::sOutputFileDestinationDirectory] + &quot;\\&quot; +  @[$Project::sOutputFileNamePrefix] +  @[User::sFileDateTimeStamp] + &quot;.&quot; +  @[$Project::sOutputFileExtension]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sConnectionString">
+      <DTS:VariableValue
+        DTS:DataType="8">T:\DBA\Team\LKennedy\CMB\CMB003113_Daily_20220505160000.csv</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D8DDB2A4-A0ED-4D3B-B92E-772051B34885}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sFileDateTimeStamp">
+      <DTS:VariableValue
+        DTS:DataType="8">20220505160000</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Execute ItemDailySettlementReport"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{0ADEFF65-4D36-464B-93DC-F8517A1DD6D4}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:MaxErrorCount="5"
+      DTS:ObjectName="Execute ItemDailySettlementReport"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Execute ItemDailySettlementReport\Flat File Destination"
+              componentClassID="Microsoft.FlatFileDestination"
+              contactInfo="Flat File Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Flat File Destination"
+              localeId="1033"
+              name="Flat File Destination"
+              validateExternalMetadata="False"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether the data will overwrite or append to the destination file."
+                  name="Overwrite">true</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the text to write to the destination file before any data is written."
+                  expressionType="Notify"
+                  name="Header" />
+                <property
+                  dataType="System.Boolean"
+                  description="When text qualifier is enabled, specifies whether the text qualifier in the data written to the destination file will be escaped or not."
+                  name="EscapeQualifier">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Execute ItemDailySettlementReport\Flat File Destination.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Acxiom Item Daily Settlement]"
+                  connectionManagerRefId="Package.ConnectionManagers[Acxiom Item Daily Settlement]"
+                  name="FlatFileConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Execute ItemDailySettlementReport\Flat File Destination.Inputs[Flat File Destination Input]"
+                  hasSideEffects="true"
+                  name="Flat File Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Execute ItemDailySettlementReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[Txt]"
+                      cachedDataType="wstr"
+                      cachedLength="4000"
+                      cachedName="Txt"
+                      externalMetadataColumnId="Package\Execute ItemDailySettlementReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[TXT]"
+                      lineageId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Output].Columns[Txt]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailySettlementReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[TXT]"
+                      dataType="wstr"
+                      length="4000"
+                      name="TXT" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+            <component
+              refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="Retrieve AcxiomItemDailySettlement"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">EXEC [common].[uspAcxiomItemDailySettlementReport] ?, ?, ?
+WITH RESULT SETS
+(
+    (Txt nvarchar(4000))
+);</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::sExecutableSQL</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">2</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"@piOrgId:Input",{86E58CF4-6807-445A-ABA3-C0250B720460};"@pdtStartDate:Input",{6766F6D2-2EB8-4EB5-B767-33EA8775BD81};"@pdtEndDate:Input",{4FBE49C7-9BBA-43C4-AAB4-794F7E83D361};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Connections[OleDbConnection]"
+                  connectionManagerID="{1B097B25-AA34-438D-9891-A20E7B5967D9}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[IFA1]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Output].Columns[Txt]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="IgnoreFailure"
+                      externalMetadataColumnId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Output].ExternalColumns[Txt]"
+                      length="4000"
+                      lineageId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Output].Columns[Txt]"
+                      name="Txt"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Output].ExternalColumns[Txt]"
+                      dataType="wstr"
+                      length="4000"
+                      name="Txt" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Error Output].Columns[Txt]"
+                      dataType="wstr"
+                      length="4000"
+                      lineageId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Error Output].Columns[Txt]"
+                      name="Txt" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Execute ItemDailySettlementReport.Paths[OLE DB Source Output]"
+              endId="Package\Execute ItemDailySettlementReport\Flat File Destination.Inputs[Flat File Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Get date string"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{652D3321-FB29-480D-82F7-8CF18C4B0399}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:MaxErrorCount="5"
+      DTS:ObjectName="Get date string"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{1B097B25-AA34-438D-9891-A20E7B5967D9}"
+          SQLTask:SqlStatementSource="declare @dt nvarchar(50) = convert(nvarchar(50),getdate(),121)&#xA;select SUBSTRING(@dt, 1,4) + SUBSTRING(@dt, 6,2)+ SUBSTRING(@dt, 9,2)+ SUBSTRING(@dt, 12,2)+ SUBSTRING(@dt, 15,2)+ SUBSTRING(@dt, 18,2) as Dt"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="Dt"
+            SQLTask:DtsVariableName="User::sFileDateTimeStamp" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Send Mail Task"
+      DTS:CreationName="Microsoft.SendMailTask"
+      DTS:DelayValidation="True"
+      DTS:Description="Send Mail Task"
+      DTS:Disabled="True"
+      DTS:DTSID="{3F7D6B97-E0B2-4E88-B0B2-14D22FBAC782}"
+      DTS:ExecutableType="Microsoft.SendMailTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Send Mail Task"
+      DTS:TaskContact="Send Mail Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="MessageSource">"File can be found here: " + @[User::sConnectionString]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="Subject">@[$Project::sDBServerName]  == "931519-SQLCLUS6\\PRDTRX01" ? "Daily Stage Prod Acxiom Settlement File - " +  LEFT( @[$Project::sOutputFileNamePrefix],LEN(@[$Project::sOutputFileNamePrefix])-1) : "Daily Prod Acxiom Settlement File - " + LEFT( @[$Project::sOutputFileNamePrefix],LEN(@[$Project::sOutputFileNamePrefix])-1)</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ToLine">@[$Project::sEmailRecipient]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SendMailTask:SendMailTaskData
+          SendMailTask:SMTPServer="{6A894694-6289-43C2-AE08-6940F2D92CD6}"
+          SendMailTask:From="DBSupport@ValidAdvantage.com"
+          SendMailTask:To="csharp@validadvantage.com"
+          SendMailTask:Subject="Daily Stage Prod Acxiom Settlement File - CMB003113_Daily"
+          SendMailTask:MessageSource="File can be found here: T:\DBA\Team\LKennedy\CMB\CMB003113_Daily_20220505160000.csv" xmlns:SendMailTask="www.microsoft.com/sqlserver/dts/tasks/sendmailtask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{E7F3630E-A01F-4822-AA38-5E7231C9A835}"
+      DTS:From="Package\Execute ItemDailySettlementReport"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Send Mail Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{6160C6BF-7F92-437E-97FB-3379E4D444E1}"
+      DTS:From="Package\Get date string"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Execute ItemDailySettlementReport" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="253,42"
+          Id="Package\Execute ItemDailySettlementReport"
+          TopLeft="5.5,107.5" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Get date string"
+          TopLeft="50.1428575029179,5.5" />
+        <NodeLayout
+          Size="149,42"
+          Id="Package\Send Mail Task"
+          TopLeft="52.5000004087176,211.335294143386" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="129.500000204359,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,61.835294143386"
+              Start="0,0"
+              End="0,54.335294143386">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,54.335294143386" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="128.571428751459,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Execute ItemDailySettlementReport">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="258,42"
+          Id="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement"
+          TopLeft="5.5,5.5" />
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Execute ItemDailySettlementReport\Flat File Destination"
+          TopLeft="39.1428575710375,99.6882348479697" />
+        <EdgeLayout
+          Id="Package\Execute ItemDailySettlementReport.Paths[OLE DB Source Output]"
+          TopLeft="134.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-9.8571424289625,52.1882348479697"
+              Start="0,0"
+              End="-9.8571424289625,44.6882348479697">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.0941174239848" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.0941174239848"
+                    Point2="0,26.0941174239848"
+                    Point3="-4,26.0941174239848" />
+                  <mssgle:LineSegment
+                    End="-5.8571424289625,26.0941174239848" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-5.8571424289625,26.0941174239848"
+                    Point2="-9.8571424289625,26.0941174239848"
+                    Point3="-9.8571424289625,30.0941174239848" />
+                  <mssgle:LineSegment
+                    End="-9.8571424289625,44.6882348479697" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Execute ItemDailySettlementReport\Retrieve AcxiomItemDailySettlement">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

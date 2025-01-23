@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="IFA1"
+  DTS:DTSID="{1B097B25-AA34-438D-9891-A20E7B5967D9}"
+  DTS:CreationName="OLEDB">
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=931519-SQLCLUS6\PRDTRX01;Initial Catalog=IFA;Provider=MSOLEDBSQL.1;Integrated Security=SSPI;Application Name=SSIS-{1B097B25-AA34-438D-9891-A20E7B5967D9}IFA1;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

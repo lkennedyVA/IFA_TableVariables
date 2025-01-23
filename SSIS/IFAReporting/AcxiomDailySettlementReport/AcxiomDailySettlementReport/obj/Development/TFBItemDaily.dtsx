@@ -1,0 +1,936 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/19/2016 12:46:22 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="810113-RPTDB4"
+  DTS:CreatorName="VALIDRS\LDugger"
+  DTS:DTSID="{85742EE7-F26B-4CA6-8826-F4AD69A4691B}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5467.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="TFBItemDaily"
+  DTS:PackageType="5"
+  DTS:VersionBuild="99"
+  DTS:VersionGUID="{0D008B0A-8BEE-4B13-930E-DAC4ED76A750}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[TFB ItemDaily]"
+      DTS:CreationName="FLATFILE"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{3B9552EA-FC11-4369-946C-EB0C2A095485}"
+      DTS:ObjectName="TFB ItemDaily">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::sConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:ColumnNamesInFirstDataRow="True"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="T:\DBA\Team\LKennedy\CMB\CMB003113_Daily_20221113154526147_VAL_TXN.csv">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="DateActivated"
+              DTS:DTSID="{29985820-E8A5-4680-946C-B336D43702E7}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="OrgId"
+              DTS:DTSID="{38439D31-B98E-4870-9642-EF392A04B70F}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="TransactionKey"
+              DTS:DTSID="{F6B305EF-52F4-4A29-AA8B-CC35A60A4729}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="ClientRequestId"
+              DTS:DTSID="{1C038C15-075B-4D15-9DAF-DC3AF1C2C8DB}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="ClientRequestId2"
+              DTS:DTSID="{83CEE222-0869-464C-8387-E12700F63E4B}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="CustomerIdentifier"
+              DTS:DTSID="{E01DDE30-6CB0-4B9D-A4B9-6204C8E805D0}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="ClientItemID"
+              DTS:DTSID="{EE8ACA29-A18A-4DA2-A76A-A4701C02FF89}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="TransactionItemID"
+              DTS:DTSID="{587FC8C5-29B1-4F9B-AB97-2255D758B5BF}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="ItemRuleBreakCode"
+              DTS:DTSID="{6B217B13-A378-45C2-85D9-E18120E22DBE}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="ClientResponse"
+              DTS:DTSID="{8E5BC234-C372-43C7-B5A8-B999410A5A5F}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x002C_"
+              DTS:MaximumWidth="50"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="ItemAmount"
+              DTS:DTSID="{66E92781-4C34-4AEC-B4D6-446AC7DCF79F}"
+              DTS:CreationName="" />
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x000D__x000A_"
+              DTS:MaximumWidth="3"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="OnUs"
+              DTS:DTSID="{5576BF6B-D6D3-4170-BAAF-96EF191FB5E5}"
+              DTS:CreationName="" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1D24ABDA-B133-4ACA-8090-D3FB1E6C41EE}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::sOutputFileDestinationDirectory] + &quot;\\&quot; +  @[$Project::sOutputFileNamePrefix] +  @[User::sFileDateTimeStamp] +  @[$Project::sOutputFileNameSuffix]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sConnectionString">
+      <DTS:VariableValue
+        DTS:DataType="8">T:\DBA\Team\LKennedy\CMB\CMB003113_Daily_20221113154526147_VAL_TXN.csv</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C786A67A-B68A-4DD5-A8F8-E88BB74E609D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;[common].[uspTFBItemDailyReport]&quot;+ &quot; @piOrgId = &quot;+ @[$Project::sOrgId]  +&quot;, @pdtStartDate = NULL, @pdtEndDate = NULL;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sExecutableSQL">
+      <DTS:VariableValue
+        DTS:DataType="8">[common].[uspTFBItemDailyReport] @piOrgId = 181434, @pdtStartDate = NULL, @pdtEndDate = NULL;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0C9B978A-C4D5-4B19-A2CE-1E4E0FB16684}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sFileDateTimeStamp">
+      <DTS:VariableValue
+        DTS:DataType="8">20221113154526147</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Execute ItemDailyReport"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{7B851DB1-4C9B-471F-9535-1DD0A17E8577}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Execute ItemDailyReport"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Execute ItemDailyReport\Flat File Destination"
+              componentClassID="Microsoft.FlatFileDestination"
+              contactInfo="Flat File Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Flat File Destination"
+              localeId="1033"
+              name="Flat File Destination"
+              validateExternalMetadata="False"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies whether the data will overwrite or append to the destination file."
+                  name="Overwrite">true</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the text to write to the destination file before any data is written."
+                  expressionType="Notify"
+                  name="Header" />
+                <property
+                  dataType="System.Boolean"
+                  description="When text qualifier is enabled, specifies whether the text qualifier in the data written to the destination file will be escaped or not."
+                  name="EscapeQualifier">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Execute ItemDailyReport\Flat File Destination.Connections[FlatFileConnection]"
+                  connectionManagerID="Package.ConnectionManagers[TFB ItemDaily]"
+                  connectionManagerRefId="Package.ConnectionManagers[TFB ItemDaily]"
+                  name="FlatFileConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input]"
+                  hasSideEffects="true"
+                  name="Flat File Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[DateActivated]"
+                      cachedDataType="dbTimeStamp2"
+                      cachedName="DateActivated"
+                      cachedScale="7"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DateActivated]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[DateActivated]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[OrgId]"
+                      cachedDataType="i4"
+                      cachedName="OrgId"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[OrgId]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[OrgId]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[TransactionKey]"
+                      cachedDataType="wstr"
+                      cachedLength="25"
+                      cachedName="TransactionKey"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[TransactionKey]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[TransactionKey]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[ClientRequestId]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="ClientRequestId"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientRequestId]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientRequestId]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[ClientRequestId2]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="ClientRequestId2"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientRequestId2]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientRequestId2]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[TransactionItemID]"
+                      cachedDataType="wstr"
+                      cachedLength="25"
+                      cachedName="TransactionItemID"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[TransactionItemID]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[TransactionItemID]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[ItemAmount]"
+                      cachedDataType="cy"
+                      cachedName="ItemAmount"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ItemAmount]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ItemAmount]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[CustomerIdentifier]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="CustomerIdentifier"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[CustomerIdentifier]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[CustomerIdentifier]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[ClientItemID]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="ClientItemID"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientItemID]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientItemID]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[ItemRuleBreakCode]"
+                      cachedDataType="wstr"
+                      cachedLength="25"
+                      cachedName="ItemRuleBreakCode"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ItemRuleBreakCode]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ItemRuleBreakCode]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[ClientResponse]"
+                      cachedDataType="wstr"
+                      cachedLength="25"
+                      cachedName="ClientResponse"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientResponse]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientResponse]" />
+                    <inputColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].Columns[OnUs]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="3"
+                      cachedName="OnUs"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[OnUs]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[OnUs]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[DateActivated]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="DateActivated" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[OrgId]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="OrgId" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[TransactionKey]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TransactionKey" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientRequestId]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ClientRequestId" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientRequestId2]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ClientRequestId2" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[TransactionItemID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="TransactionItemID" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ItemAmount]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ItemAmount" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[CustomerIdentifier]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="CustomerIdentifier" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientItemID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ClientItemID" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ItemRuleBreakCode]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ItemRuleBreakCode" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[ClientResponse]"
+                      codePage="1252"
+                      dataType="str"
+                      length="50"
+                      name="ClientResponse" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input].ExternalColumns[OnUs]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="OnUs" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+            </component>
+            <component
+              refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="Retrieve TFBItemDaily"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::sExecutableSQL</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Connections[OleDbConnection]"
+                  connectionManagerID="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}:external"
+                  connectionManagerRefId="Project.ConnectionManagers[Prod]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[DateActivated]"
+                      dataType="dbTimeStamp2"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[DateActivated]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[DateActivated]"
+                      name="DateActivated"
+                      scale="7"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[OrgId]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[OrgId]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[OrgId]"
+                      name="OrgId"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientRequestId]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientRequestId]"
+                      length="50"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientRequestId]"
+                      name="ClientRequestId"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientRequestId2]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientRequestId2]"
+                      length="50"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientRequestId2]"
+                      name="ClientRequestId2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[TransactionItemID]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[TransactionItemID]"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[TransactionItemID]"
+                      name="TransactionItemID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ItemAmount]"
+                      dataType="cy"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ItemAmount]"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ItemAmount]"
+                      name="ItemAmount"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[CustomerIdentifier]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[CustomerIdentifier]"
+                      length="100"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[CustomerIdentifier]"
+                      name="CustomerIdentifier"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientItemID]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientItemID]"
+                      length="50"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientItemID]"
+                      name="ClientItemID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ItemRuleBreakCode]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ItemRuleBreakCode]"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ItemRuleBreakCode]"
+                      name="ItemRuleBreakCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientResponse]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientResponse]"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[ClientResponse]"
+                      name="ClientResponse"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[TransactionKey]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[TransactionKey]"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[TransactionKey]"
+                      name="TransactionKey"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[OnUs]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[OnUs]"
+                      length="3"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].Columns[OnUs]"
+                      name="OnUs"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[DateActivated]"
+                      dataType="dbTimeStamp2"
+                      name="DateActivated"
+                      scale="7" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[OrgId]"
+                      dataType="i4"
+                      name="OrgId" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientRequestId]"
+                      dataType="wstr"
+                      length="50"
+                      name="ClientRequestId" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientRequestId2]"
+                      dataType="wstr"
+                      length="50"
+                      name="ClientRequestId2" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[TransactionItemID]"
+                      dataType="wstr"
+                      length="25"
+                      name="TransactionItemID" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ItemAmount]"
+                      dataType="cy"
+                      name="ItemAmount" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[CustomerIdentifier]"
+                      dataType="wstr"
+                      length="100"
+                      name="CustomerIdentifier" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientItemID]"
+                      dataType="wstr"
+                      length="50"
+                      name="ClientItemID" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ItemRuleBreakCode]"
+                      dataType="wstr"
+                      length="25"
+                      name="ItemRuleBreakCode" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[ClientResponse]"
+                      dataType="wstr"
+                      length="25"
+                      name="ClientResponse" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[TransactionKey]"
+                      dataType="wstr"
+                      length="25"
+                      name="TransactionKey" />
+                    <externalMetadataColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output].ExternalColumns[OnUs]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      name="OnUs" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[DateActivated]"
+                      dataType="dbTimeStamp2"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[DateActivated]"
+                      name="DateActivated"
+                      scale="7" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[OrgId]"
+                      dataType="i4"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[OrgId]"
+                      name="OrgId" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[TransactionKey]"
+                      dataType="wstr"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[TransactionKey]"
+                      name="TransactionKey" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientRequestId]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientRequestId]"
+                      name="ClientRequestId" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientRequestId2]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientRequestId2]"
+                      name="ClientRequestId2" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[CustomerIdentifier]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[CustomerIdentifier]"
+                      name="CustomerIdentifier" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientItemID]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientItemID]"
+                      name="ClientItemID" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[TransactionItemID]"
+                      dataType="wstr"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[TransactionItemID]"
+                      name="TransactionItemID" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ItemRuleBreakCode]"
+                      dataType="wstr"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ItemRuleBreakCode]"
+                      name="ItemRuleBreakCode" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientResponse]"
+                      dataType="wstr"
+                      length="25"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ClientResponse]"
+                      name="ClientResponse" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ItemAmount]"
+                      dataType="cy"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ItemAmount]"
+                      name="ItemAmount" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[OnUs]"
+                      codePage="1252"
+                      dataType="str"
+                      length="3"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[OnUs]"
+                      name="OnUs" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Execute ItemDailyReport.Paths[OLE DB Source Output]"
+              endId="Package\Execute ItemDailyReport\Flat File Destination.Inputs[Flat File Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\Execute ItemDailyReport\Retrieve TFBItemDaily.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Get date string"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{A39AF1D8-9899-4604-95D8-BCF4CB6C36F5}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get date string"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}"
+          SQLTask:SqlStatementSource="SELECT Dt = [import].[ufnGetDateString]('TFB')"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="Dt"
+            SQLTask:DtsVariableName="User::sFileDateTimeStamp" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Send Mail Task"
+      DTS:CreationName="Microsoft.SendMailTask"
+      DTS:DelayValidation="True"
+      DTS:Description="Send Mail Task"
+      DTS:DTSID="{79F914EA-A1D8-43CD-93EB-93AA1679BFD5}"
+      DTS:ExecutableType="Microsoft.SendMailTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Send Mail Task"
+      DTS:TaskContact="Send Mail Task; Microsoft Corporation; SQL Server 2016; © 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:PropertyExpression
+        DTS:Name="MessageSource">"File can be found here: " + @[User::sConnectionString]</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="Subject">@[$Project::sDBServerName]  != "931519-SQLCLUS6\\PRDTRX01" ? "Daily Stage FiServ File - " +  LEFT( @[$Project::sOutputFileNamePrefix],LEN(@[$Project::sOutputFileNamePrefix])-1) : "Daily Prod FiServ File - " + LEFT( @[$Project::sOutputFileNamePrefix],LEN(@[$Project::sOutputFileNamePrefix])-1)</DTS:PropertyExpression>
+      <DTS:PropertyExpression
+        DTS:Name="ToLine">@[$Project::sEmailRecipient]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <SendMailTask:SendMailTaskData
+          SendMailTask:SMTPServer="{6A894694-6289-43C2-AE08-6940F2D92CD6}"
+          SendMailTask:From="DBSupport@ValidAdvantage.com"
+          SendMailTask:To="csharp@validadvantage.com"
+          SendMailTask:Subject="Daily Prod FiServ File - CMB003113_Daily"
+          SendMailTask:MessageSource="File can be found here: T:\DBA\Team\LKennedy\CMB\CMB003113_Daily_20221113154526147_VAL_TXN.csv" xmlns:SendMailTask="www.microsoft.com/sqlserver/dts/tasks/sendmailtask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{704FFA71-0AFD-465B-870B-3735FCCFB6E0}"
+      DTS:From="Package\Execute ItemDailyReport"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Send Mail Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{0DECD5ED-7FFC-47B0-8D9D-2917740C17A8}"
+      DTS:From="Package\Get date string"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Execute ItemDailyReport" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="195,42"
+          Id="Package\Execute ItemDailyReport"
+          TopLeft="5.50000000000003,107.5" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Get date string"
+          TopLeft="29,5.5" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Send Mail Task"
+          TopLeft="28.5,209.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="103.4,149.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.4"
+              Start="0,0"
+              End="0,52.9">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.9" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="103.45,47.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60.4"
+              Start="0,0"
+              End="0,52.9">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.9" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Execute ItemDailyReport">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="172,42"
+          Id="Package\Execute ItemDailyReport\Flat File Destination"
+          TopLeft="12,107.5" />
+        <NodeLayout
+          Size="184,42"
+          Id="Package\Execute ItemDailyReport\Retrieve TFBItemDaily"
+          TopLeft="5.50000000000001,5.5" />
+        <EdgeLayout
+          Id="Package\Execute ItemDailyReport.Paths[OLE DB Source Output]"
+          TopLeft="97.75,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Execute ItemDailyReport\Retrieve TFBItemDaily">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
