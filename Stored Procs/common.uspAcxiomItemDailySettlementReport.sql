@@ -21,7 +21,7 @@ GO
 			before pushing to UAT
 		2025-01-09 - LXK - Replaced table variable with local temp table
 *****************************************************************************************/
-ALTER     PROCEDURE [common].[uspAcxiomItemDailySettlementReport](
+ALTER PROCEDURE [common].[uspAcxiomItemDailySettlementReport](
 	 @piOrgId INT 
 	,@pdtStartDate DATETIME2(7) = NULL
 	,@pdtEndDate DATETIME2(7) = NULL
@@ -43,6 +43,8 @@ BEGIN
 		,DateActivated datetime2(7)
 		,ChannelName nvarchar(50)
 	);
+
+
 
 	DECLARE @iOrgId int = @piOrgId
 		,@ncCreateDate nchar(8) = REPLACE(CONVERT(nvarchar(25),GETDATE(),102),'.','') --YYYYMMDD
@@ -81,7 +83,7 @@ BEGIN
 	WHERE DateCommitted >= @dtStartDate 
 		AND DateCommitted < @dtEndDate
 
-	SELECT @nvHeader as Txt
+	SELECT CAST(@nvHeader AS NVARCHAR(4000)) AS Txt
 	UNION ALL
 	SELECT Txt
 	FROM (SELECT TOP 1000000 Txt1 +	--@ncDelimiter +
