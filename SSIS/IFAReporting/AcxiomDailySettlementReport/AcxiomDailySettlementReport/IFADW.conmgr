@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="IFADW"
+  DTS:DTSID="{0fae31de-81a9-4348-8cb3-016bc346c360}"
+  DTS:CreationName="OLEDB">
+  <DTS:PropertyExpression
+    DTS:Name="InitialCatalog">@[$Project::sIFADWDBName]</DTS:PropertyExpression>
+  <DTS:PropertyExpression
+    DTS:Name="ServerName">@[$Project::sIFADWDBServerName]</DTS:PropertyExpression>
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=FWUSDEVDB02;Initial Catalog=IFADW;Provider=SQLOLEDB.1;Integrated Security=SSPI;Application Name=SSIS-{0fae31de-81a9-4348-8cb3-016bc346c360}IFADW;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

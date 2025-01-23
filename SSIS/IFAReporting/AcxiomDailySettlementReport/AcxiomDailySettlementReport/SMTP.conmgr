@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="SMTP"
+  DTS:DTSID="{6A894694-6289-43C2-AE08-6940F2D92CD6}"
+  DTS:CreationName="SMTP">
+  <DTS:PropertyExpression
+    DTS:Name="SmtpServer">@[$Project::sSMTP]</DTS:PropertyExpression>
+  <DTS:ObjectData>
+    <SmtpConnectionManager
+      ConnectionString="SmtpServer=vhqad2;UseWindowsAuthentication=True;EnableSsl=False;"
+      ConnectByProxy="False" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>

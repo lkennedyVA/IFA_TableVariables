@@ -1,0 +1,700 @@
+<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/19/2016 12:46:22 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="810113-RPTDB4"
+  DTS:CreatorName="VALIDRS\LDugger"
+  DTS:DTSID="{D732BBC0-BDBE-4B6F-818B-E3FFEA1E052C}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5467.0"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="TFBBlackline"
+  DTS:PackageType="5"
+  DTS:VersionBuild="154"
+  DTS:VersionGUID="{96500F7A-7A6A-4D68-B90D-F908F2525C5B}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CSVOutputFile]"
+      DTS:CreationName="FLATFILE"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{6184DB17-A8C6-4D4A-87C6-08B0C8ECE74E}"
+      DTS:ObjectName="CSVOutputFile">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::sConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="1252"
+          DTS:ConnectionString="\\931519-SQLCLUS6\\rpt\FiServ\CMB\CMB003113_Daily__VAL_TXN.csv">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x000D__x000A_"
+              DTS:MaximumWidth="4000"
+              DTS:DataType="130"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Txt"
+              DTS:DTSID="{C429767B-B164-48DE-8565-AEE6E26C262C}"
+              DTS:CreationName="" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[TXTOutputFile]"
+      DTS:CreationName="FLATFILE"
+      DTS:DelayValidation="True"
+      DTS:Description="TXTOutputFile"
+      DTS:DTSID="{0D00B90B-74CA-49D4-A04C-5E6321EF1D2A}"
+      DTS:ObjectName="TXTOutputFile">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[$Project::sOutputFileDestinationDirectory] + "\\" +  @[$Project::sOutputFileNamePrefix] + @[User::sFileDateTimeStamp] +@[$Project::sOutputFileNameSuffix]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:Format="Delimited"
+          DTS:LocaleID="1033"
+          DTS:HeaderRowDelimiter="_x000D__x000A_"
+          DTS:RowDelimiter=""
+          DTS:TextQualifier="_x003C_none_x003E_"
+          DTS:CodePage="65001"
+          DTS:ConnectionString="\\931519-SQLCLUS6\\rpt\FiServ\CMB\CMB003113_Daily__VAL_TXN.csv">
+          <DTS:FlatFileColumns>
+            <DTS:FlatFileColumn
+              DTS:ColumnType="Delimited"
+              DTS:ColumnDelimiter="_x000D__x000A_"
+              DTS:MaximumWidth="608"
+              DTS:DataType="129"
+              DTS:TextQualified="True"
+              DTS:ObjectName="Txt"
+              DTS:DTSID="{E23C397A-B359-41B2-87D4-317C3C3E5DA4}"
+              DTS:CreationName="" />
+          </DTS:FlatFileColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4220C744-8F83-4F52-BB4A-485AD86B348F}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[$Project::sOutputFileDestinationDirectory] + &quot;\\&quot; +  @[$Project::sOutputFileNamePrefix] +@[$Project::sOutputFileNameSuffix]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sConnectionString">
+      <DTS:VariableValue
+        DTS:DataType="8">\\931519-SQLCLUS6\\rpt\FiServ\CMB\CMB003113_Daily__VAL_TXN.csv</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{02F7C43D-A130-4652-88B0-7348B808363E}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sFileDateTimeStamp">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C25C26A9-16BF-47CE-BE15-2BC1537325EE}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="sMonthlyStartDate">
+      <DTS:VariableValue
+        DTS:DataType="8"
+        xml:space="preserve"></DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Get sMonthlyStartDate"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{13852F74-6D00-4DBE-B9DA-A07C4C959612}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get sMonthlyStartDate"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}"
+          SQLTask:SqlStatementSource="SELECT [dbo].[ufnTruistBlacklineReturnDateSelect]();"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="0"
+            SQLTask:DtsVariableName="User::sMonthlyStartDate" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Sequence Container"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{C363D2E4-CCA9-446A-BD34-D0D92487C623}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Sequence Container">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\Execute TFBBlackline"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{77b8f211-c2ef-4140-9345-81841fae3fcc}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Execute TFBBlackline"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="Retrieve TFBBlackline"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">EXECUTE [dbo].[uspTruistBlacklineGuaranteedReturnReport];</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable">User::sExecutableSQL</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">65001</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">true</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping"></property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Connections[OleDbConnection]"
+                      connectionManagerID="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}:invalid"
+                      connectionManagerRefId="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}:invalid"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Output].Columns[Txt]"
+                          codePage="65001"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Output].ExternalColumns[Txt]"
+                          length="608"
+                          lineageId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Output].Columns[Txt]"
+                          name="Txt"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Output].ExternalColumns[Txt]"
+                          codePage="65001"
+                          dataType="str"
+                          length="608"
+                          name="Txt" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Error Output].Columns[Txt]"
+                          codePage="65001"
+                          dataType="str"
+                          length="608"
+                          lineageId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Error Output].Columns[Txt]"
+                          name="Txt" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Sequence Container\Execute TFBBlackline\TFB Blackline"
+                  componentClassID="Microsoft.FlatFileDestination"
+                  contactInfo="Flat File Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Flat File Destination"
+                  localeId="1033"
+                  name="TFB Blackline">
+                  <properties>
+                    <property
+                      dataType="System.Boolean"
+                      description="Specifies whether the data will overwrite or append to the destination file."
+                      name="Overwrite">true</property>
+                    <property
+                      dataType="System.Null"
+                      description="Specifies the text to write to the destination file before any data is written."
+                      expressionType="Notify"
+                      name="Header" />
+                    <property
+                      dataType="System.Boolean"
+                      description="When text qualifier is enabled, specifies whether the text qualifier in the data written to the destination file will be escaped or not."
+                      name="EscapeQualifier">false</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Sequence Container\Execute TFBBlackline\TFB Blackline.Connections[FlatFileConnection]"
+                      connectionManagerID="Package.ConnectionManagers[TXTOutputFile]"
+                      connectionManagerRefId="Package.ConnectionManagers[TXTOutputFile]"
+                      name="FlatFileConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Sequence Container\Execute TFBBlackline\TFB Blackline.Inputs[Flat File Destination Input]"
+                      hasSideEffects="true"
+                      name="Flat File Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Sequence Container\Execute TFBBlackline\TFB Blackline.Inputs[Flat File Destination Input].Columns[Txt]"
+                          cachedCodepage="65001"
+                          cachedDataType="str"
+                          cachedLength="608"
+                          cachedName="Txt"
+                          externalMetadataColumnId="Package\Sequence Container\Execute TFBBlackline\TFB Blackline.Inputs[Flat File Destination Input].ExternalColumns[Txt]"
+                          lineageId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Output].Columns[Txt]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Execute TFBBlackline\TFB Blackline.Inputs[Flat File Destination Input].ExternalColumns[Txt]"
+                          codePage="65001"
+                          dataType="str"
+                          length="608"
+                          name="Txt" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Sequence Container\Execute TFBBlackline.Paths[OLE DB Source Output]"
+                  endId="Package\Sequence Container\Execute TFBBlackline\TFB Blackline.Inputs[Flat File Destination Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\Send Mail Task"
+          DTS:CreationName="Microsoft.SendMailTask"
+          DTS:DelayValidation="True"
+          DTS:Description="Send Mail Task"
+          DTS:DTSID="{e2e00b47-d145-4d57-919a-d6d5436b2fa1}"
+          DTS:ExecutableType="Microsoft.SendMailTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Send Mail Task"
+          DTS:TaskContact="Send Mail Task; Microsoft Corporation; SQL Server 2016; Â© 2015 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:PropertyExpression
+            DTS:Name="FileAttachments">@[User::sConnectionString]</DTS:PropertyExpression>
+          <DTS:PropertyExpression
+            DTS:Name="MessageSource">"File can be found here: " + @[User::sConnectionString]</DTS:PropertyExpression>
+          <DTS:PropertyExpression
+            DTS:Name="ToLine">@[$Project::sEmailRecipient]</DTS:PropertyExpression>
+          <DTS:ObjectData>
+            <SendMailTask:SendMailTaskData
+              SendMailTask:SMTPServer="{6A894694-6289-43C2-AE08-6940F2D92CD6}"
+              SendMailTask:From="DBSupport@ValidAdvantage.com"
+              SendMailTask:To="csharp@validadvantage.com"
+              SendMailTask:Subject="Monthly Truist Blackline Report"
+              SendMailTask:MessageSource="File can be found here: \\931519-SQLCLUS6\\rpt\FiServ\CMB\CMB003113_Daily__VAL_TXN.csv" xmlns:SendMailTask="www.microsoft.com/sqlserver/dts/tasks/sendmailtask">
+              <SendMailTask:Attachments
+                SendMailTask:FileName="\\931519-SQLCLUS6\\rpt\FiServ\CMB\CMB003113_Daily__VAL_TXN.csv" />
+            </SendMailTask:SendMailTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\uspTruistBlacklineReportGenerationStatusLogError"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{62386AD2-7AB3-4379-9DE2-CB4E15DC01DE}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="uspTruistBlacklineReportGenerationStatusLogError"
+          DTS:ThreadHint="1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}"
+              SQLTask:SqlStatementSource="EXEC dbo.uspTruistBlacklineReportGenerationStatusLogError" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\uspTruistBlacklineReportGenerationStatusLogSuccess"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{96CFD328-B868-443D-940C-17F431260C8C}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="uspTruistBlacklineReportGenerationStatusLogSuccess"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}"
+              SQLTask:SqlStatementSource="EXECUTE [dbo].[uspTruistBlacklineReportGenerationStatusLogSuccess]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{B6150E65-F79F-4509-905B-729BA9A47780}"
+          DTS:From="Package\Sequence Container\Execute TFBBlackline"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Sequence Container\uspTruistBlacklineReportGenerationStatusLogError"
+          DTS:Value="1" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{e875f264-8d17-4c1e-a00e-d5abc24f3427}"
+          DTS:From="Package\Sequence Container\Execute TFBBlackline"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Sequence Container\Send Mail Task" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{4DA4FA27-8BC5-4A94-902C-6D41F777E483}"
+          DTS:From="Package\Sequence Container\Send Mail Task"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Sequence Container\uspTruistBlacklineReportGenerationStatusLogSuccess" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\sp_PopulateReportGenerationStatusLog"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{73557c78-fdba-42f9-a002-75a4a2d3bf89}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="sp_PopulateReportGenerationStatusLog"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{B39C4C7D-8E3E-44DC-B0AB-A9AEB27E0B08}"
+          SQLTask:SqlStatementSource="EXEC [dbo].[sp_PopulateReportGenerationStatusLog];" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{BD73A807-315F-4FEA-9E1B-A297E506EDFA}"
+      DTS:From="Package\sp_PopulateReportGenerationStatusLog"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Get sMonthlyStartDate" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{C84961D6-1F0E-43A6-ACB4-D27269D49A42}"
+      DTS:EvalOp="3"
+      DTS:Expression="@[User::sMonthlyStartDate] != &quot;0000-00-00&quot;"
+      DTS:From="Package\Get sMonthlyStartDate"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Sequence Container" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="185,42"
+          Id="Package\Get sMonthlyStartDate"
+          TopLeft="227,107.5" />
+        <NodeLayout
+          Size="178,42"
+          Id="Package\Sequence Container\Execute TFBBlackline"
+          TopLeft="368.5,5.5" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Sequence Container\Send Mail Task"
+          TopLeft="382.5,107.5" />
+        <NodeLayout
+          Size="316,42"
+          Id="Package\Sequence Container\uspTruistBlacklineReportGenerationStatusLogError"
+          TopLeft="5.50000000000006,107.5" />
+        <NodeLayout
+          Size="329,42"
+          Id="Package\Sequence Container\uspTruistBlacklineReportGenerationStatusLogSuccess"
+          TopLeft="293,209.5" />
+        <EdgeLayout
+          Id="Package\Sequence Container.PrecedenceConstraints[Constraint]"
+          TopLeft="429.166666666667,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-265.666666666667,60"
+              Start="0,0"
+              End="-265.666666666667,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.3207126948775" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.3207126948775"
+                    Point2="0,24.3207126948775"
+                    Point3="-4,24.3207126948775" />
+                  <mssgle:LineSegment
+                    End="-261.666666666667,24.3207126948775" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-261.666666666667,24.3207126948775"
+                    Point2="-265.666666666667,24.3207126948775"
+                    Point3="-265.666666666667,28.3207126948775" />
+                  <mssgle:LineSegment
+                    End="-265.666666666667,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-148.074680989583,29.3207126948775,30.4826953125,9.7490234375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container.PrecedenceConstraints[Constraint 1]"
+          TopLeft="485.833333333333,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-28.3333333333333,60"
+              Start="0,0"
+              End="-28.3333333333333,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.3207126948775" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,20.3207126948775"
+                    Point2="0,24.3207126948775"
+                    Point3="-4,24.3207126948775" />
+                  <mssgle:LineSegment
+                    End="-24.3333333333333,24.3207126948775" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-24.3333333333333,24.3207126948775"
+                    Point2="-28.3333333333333,24.3207126948775"
+                    Point3="-28.3333333333333,28.3207126948775" />
+                  <mssgle:LineSegment
+                    End="-28.3333333333333,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container.PrecedenceConstraints[Constraint 2]"
+          TopLeft="457.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="628,306"
+          Size="628,350"
+          Id="Package\Sequence Container"
+          TopLeft="5.50000000000006,209.5" />
+        <NodeLayout
+          Size="265,42"
+          Id="Package\sp_PopulateReportGenerationStatusLog"
+          TopLeft="187,5.5" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="319.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="319.5,149.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-8,18.25,16,16"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Sequence Container\Execute TFBBlackline">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="141,42"
+          Id="Package\Sequence Container\Execute TFBBlackline\TFB Blackline"
+          TopLeft="25,107.5" />
+        <NodeLayout
+          Size="180,42"
+          Id="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline"
+          TopLeft="5.50000000000001,5.5" />
+        <EdgeLayout
+          Id="Package\Sequence Container\Execute TFBBlackline.Paths[OLE DB Source Output]"
+          TopLeft="95.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Sequence Container\Execute TFBBlackline\Retrieve TFBBlackline">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
