@@ -29,91 +29,157 @@ GO
 		2025-01-08 - LXK - Removed table Variable to local temp table, BMO proc written the same, implementing same change
 
 *****************************************************************************************/
-ALTER   PROCEDURE [common].[uspKEYItemDailyReport](
-	 @piOrgId INT
-	,@pdtStartDate DATETIME2(7) = NULL
-	,@pdtEndDate DATETIME2(7) = NULL
+ALTER PROCEDURE [common].[uspKEYItemDailyReport](
+    @piOrgId INT,
+    @pdtStartDate DATETIME2(7) = NULL,
+    @pdtEndDate DATETIME2(7) = NULL
 )
 AS
 BEGIN
-	SET NOCOUNT ON;
-	drop table if exists #ItemDailyReportKEY
-	CREATE TABLE #ItemDailyReportKEY(
-		 LevelId int
-		,ParentId int
-		,OrgId int
-		,OrgCode nvarchar(25)
-		,OrgName nvarchar(255)
-		,ExternalCode nvarchar(50)
-		,TypeId int
-		,[Type] nvarchar(50)
-		,StatusFlag int
-		,DateActivated datetime2(7)
-		,ChannelName nvarchar(50)
-	);
-	DECLARE @iOrgId int = @piOrgId
-		,@dtStartDate datetime2(7) = @pdtStartDate
-		,@dtEndDate datetime2(7) = @pdtEndDate
-		,@tTime time --2023-07-12
-		,@iOrgDimensionId int = [common].[ufnDimension]('Organization');
+    SET NOCOUNT ON;
 
-	INSERT INTO #ItemDailyReportKEY(LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,ChannelName)
-	SELECT LevelId,ParentId,OrgId,OrgCode,OrgName,ExternalCode,TypeId,[Type],StatusFlag,DateActivated,[common].[ufnOrgChannelName](OrgId)
-	FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId,@iOrgDimensionId)
-	WHERE OrgCode not like '%Test%'
-	ORDER BY ParentId, OrgId;
+    -- Metadata definition for SSIS to ensure column structure
+    IF 1 = 0
+    BEGIN
+        SELECT 
+            CAST(NULL AS DATETIME2(7)) AS DateActivated,
+            CAST(NULL AS INT) AS OrgId,
+            CAST(NULL AS NVARCHAR(25)) AS TransactionKey,
+            CAST(NULL AS NVARCHAR(50)) AS ClientRequestId,
+            CAST(NULL AS NVARCHAR(50)) AS ClientRequestId2,
+            CAST(NULL AS NVARCHAR(100)) AS CustomerIdentifier,
+            CAST(NULL AS NVARCHAR(50)) AS ClientItemID,
+            CAST(NULL AS NVARCHAR(25)) AS TransactionItemID,
+            CAST(NULL AS NVARCHAR(25)) AS ItemRuleBreak,
+            CAST(NULL AS NVARCHAR(25)) AS ItemRuleBreakCode,
+            CAST(NULL AS NVARCHAR(25)) AS ClientResponse,
+            CAST(NULL AS MONEY) AS ItemAmount,
+            CAST(NULL AS MONEY) AS Fee,
+            CAST(NULL AS NVARCHAR(50)) AS CustomerAccountNumber;
+        RETURN;
+    END;
 
-	IF ISNULL(@dtStartDate,'') = ''
-	BEGIN
-		--SET @dtStartDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-1)) + ' 22:00:00.0000000') --2023-07-12
-		--SET @dtEndDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE())) + ' 22:00:00.0000000') --2023-07-12
+    -- Drop temp tables if they exist
+    DROP TABLE IF EXISTS #ItemDailyReportKEY;
+    DROP TABLE IF EXISTS #FinalResults;
 
-		SET @tTime = CONVERT(time, GETDATE()); --2023-07-12
+    -- Create temp table for organization details
+    CREATE TABLE #ItemDailyReportKEY (
+        LevelId INT,
+        ParentId INT,
+        OrgId INT,
+        OrgCode NVARCHAR(25),
+        OrgName NVARCHAR(255),
+        ExternalCode NVARCHAR(50),
+        TypeId INT,
+        [Type] NVARCHAR(50),
+        StatusFlag INT,
+        DateActivated DATETIME2(7),
+        ChannelName NVARCHAR(50)
+    );
 
-		--Use the standard calculation... prior day 22:00 through current day 22:00
-		IF @tTime NOT BETWEEN '00:00:00.0000000' AND '08:00:00.0000000'
-		BEGIN
-			SET @dtStartDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-1)) + ' 22:00:00.0000000');
-			SET @dtEndDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE())) + ' 22:00:00.0000000');
-		END
-		--Otherwise use two days ago 22:00 through prior day 22:00
-		ELSE IF @tTime BETWEEN '00:00:00.0000000' AND '08:00:00.0000000'
-		BEGIN
-			SET @dtStartDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-2)) + ' 22:00:00.0000000');
-			SET @dtEndDate = CONVERT(DATETIME2(7),CONVERT(NVARCHAR(20),CONVERT(DATE,GETDATE()-1)) + ' 22:00:00.0000000');
-		END
-	END
-	
-	OPEN SYMMETRIC KEY VALIDSYMKEY DECRYPTION BY ASYMMETRIC KEY VALIDASYMKEY
-	SELECT distinct p.DateActivated as 'DateActivated'
-		,p.OrgId as 'OrgId'
-		,p.ProcessKey as 'TransactionKey' 
-		,ClientRequestId
-		,ClientRequestId2
-		,CONVERT(NVARCHAR(100),CONVERT(NVARCHAR(50),DECRYPTBYKEY(cix.IdEncrypted ))) as 'CustomerIdentifier'
-		,i.ClientItemId as 'ClientItemID'
-		,i.ItemKey as 'TransactionItemID'		
-		,i.Rulebreak as 'ItemRuleBreak'
-		,ISNULL(rbd.Code,'') as 'ItemRuleBreakCode' --2023-02-08
-		,ca.Code as 'ClientResponse'
-		,i.CheckAmount as 'ItemAmount'
-		,i.Fee as 'Fee'
-		,a.AccountNumber as 'CustomerAccountNumber'
-	FROM [ifa].[Process] p WITH (READUNCOMMITTED)
-	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) on p.ProcessId = i.ProcessId
-	INNER JOIN [customer].[CustomerIdXref] cix WITH (READUNCOMMITTED) on p.CustomerId = cix.CustomerId
-																	AND cix.IdTypeId = 25 
-																	AND cix.StatusFlag = 1
-	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) on i.ClientAcceptedId = ca.ClientAcceptedId
---	INNER JOIN [customer].[Account] a WITH (READUNCOMMITTED) on p.CustomerId = a.CustomerId
-	INNER JOIN [customer].[Account] a WITH (READUNCOMMITTED) on p.AccountId = a.AccountId  --2023-02-08
-														AND p.CustomerId = a.CustomerId
-														AND a.AccountTypeId = 1 
-	LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) on i.ItemId = rbd.ItemId
-	CROSS APPLY #ItemDailyReportKEY dol
-	WHERE p.DateActivated >= @dtStartDate 
-		AND p.DateActivated < @dtEndDate
-		AND dol.OrgId = p.OrgId
-	ORDER BY p.DateActivated, i.ClientItemId;
-	CLOSE SYMMETRIC KEY VALIDSYMKEY 
-END
+    -- Create final results temp table
+    CREATE TABLE #FinalResults (
+        DateActivated DATETIME2(7),
+        OrgId INT,
+        TransactionKey NVARCHAR(25),
+        ClientRequestId NVARCHAR(50),
+        ClientRequestId2 NVARCHAR(50),
+        CustomerIdentifier NVARCHAR(100),
+        ClientItemID NVARCHAR(50),
+        TransactionItemID NVARCHAR(25),
+        ItemRuleBreak NVARCHAR(25),
+        ItemRuleBreakCode NVARCHAR(25),
+        ClientResponse NVARCHAR(25),
+        ItemAmount MONEY,
+        Fee MONEY,
+        CustomerAccountNumber NVARCHAR(50)
+    );
+
+    -- Declare variables
+    DECLARE @iOrgId INT = @piOrgId,
+            @dtStartDate DATETIME2(7) = @pdtStartDate,
+            @dtEndDate DATETIME2(7) = @pdtEndDate,
+            @tTime TIME,
+            @iOrgDimensionId INT = [common].[ufnDimension]('Organization');
+
+    -- Populate temp table with organization hierarchy data
+    INSERT INTO #ItemDailyReportKEY(LevelId, ParentId, OrgId, OrgCode, OrgName, ExternalCode, TypeId, [Type], StatusFlag, DateActivated, ChannelName)
+    SELECT LevelId, ParentId, OrgId, OrgCode, OrgName, ExternalCode, TypeId, [Type], StatusFlag, DateActivated, [common].[ufnOrgChannelName](OrgId)
+    FROM [common].[ufnDownDimensionByOrgIdILTF](@iOrgId, @iOrgDimensionId)
+    WHERE OrgCode NOT LIKE '%Test%'
+    ORDER BY ParentId, OrgId;
+
+    -- Handle default date range if not provided
+    IF @dtStartDate IS NULL OR @dtEndDate IS NULL
+    BEGIN
+        SET @tTime = CONVERT(TIME, GETDATE());
+
+        -- Use standard calculation (prior day 22:00 to current day 22:00)
+        IF @tTime NOT BETWEEN '00:00:00.0000000' AND '08:00:00.0000000'
+        BEGIN
+            SET @dtStartDate = CONVERT(DATETIME2(7), CONVERT(NVARCHAR(20), CONVERT(DATE, GETDATE() - 1)) + ' 22:00:00.0000000');
+            SET @dtEndDate = CONVERT(DATETIME2(7), CONVERT(NVARCHAR(20), CONVERT(DATE, GETDATE())) + ' 22:00:00.0000000');
+        END
+        -- Use two days ago (22:00) to prior day (22:00)
+        ELSE IF @tTime BETWEEN '00:00:00.0000000' AND '08:00:00.0000000'
+        BEGIN
+            SET @dtStartDate = CONVERT(DATETIME2(7), CONVERT(NVARCHAR(20), CONVERT(DATE, GETDATE() - 2)) + ' 22:00:00.0000000');
+            SET @dtEndDate = CONVERT(DATETIME2(7), CONVERT(NVARCHAR(20), CONVERT(DATE, GETDATE() - 1)) + ' 22:00:00.0000000');
+        END
+    END;
+    
+    -- Open encryption key
+    OPEN SYMMETRIC KEY VALIDSYMKEY DECRYPTION BY ASYMMETRIC KEY VALIDASYMKEY;
+
+    -- Insert final data into #FinalResults temp table
+    INSERT INTO #FinalResults
+    SELECT DISTINCT 
+        p.DateActivated AS DateActivated,
+        p.OrgId AS OrgId,
+        p.ProcessKey AS TransactionKey,
+        ClientRequestId,
+        ClientRequestId2,
+        CONVERT(NVARCHAR(100), CONVERT(NVARCHAR(50), DECRYPTBYKEY(cix.IdEncrypted))) AS CustomerIdentifier,
+        i.ClientItemId AS ClientItemID,
+        i.ItemKey AS TransactionItemID,
+        i.Rulebreak AS ItemRuleBreak,
+        ISNULL(rbd.Code, '') AS ItemRuleBreakCode,
+        ca.Code AS ClientResponse,
+        i.CheckAmount AS ItemAmount,
+        i.Fee AS Fee,
+        a.AccountNumber AS CustomerAccountNumber
+    FROM [ifa].[Process] p WITH (READUNCOMMITTED)
+    INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
+    INNER JOIN [customer].[CustomerIdXref] cix WITH (READUNCOMMITTED) ON p.CustomerId = cix.CustomerId AND cix.IdTypeId = 25 AND cix.StatusFlag = 1
+    INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
+    INNER JOIN [customer].[Account] a WITH (READUNCOMMITTED) ON p.AccountId = a.AccountId  AND p.CustomerId = a.CustomerId AND a.AccountTypeId = 1
+    LEFT OUTER JOIN [ifa].[RuleBreakData] rbd WITH (READUNCOMMITTED) ON i.ItemId = rbd.ItemId
+    CROSS APPLY #ItemDailyReportKEY dol
+    WHERE p.DateActivated >= @dtStartDate 
+      AND p.DateActivated < @dtEndDate
+      AND dol.OrgId = p.OrgId
+    ORDER BY p.DateActivated, i.ClientItemId;
+
+    -- Close encryption key
+    CLOSE SYMMETRIC KEY VALIDSYMKEY;
+
+    -- Return final results
+SELECT 
+    DateActivated,
+    OrgId,
+    TransactionKey,
+    ClientRequestId,
+    ClientRequestId2,
+    CustomerIdentifier,
+    ClientItemID,
+    TransactionItemID,
+    ItemRuleBreak,
+    ItemRuleBreakCode,
+    ClientResponse,
+    ItemAmount,
+    Fee,
+    CustomerAccountNumber
+FROM #FinalResults;
+
+END;
