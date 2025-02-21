@@ -46,8 +46,13 @@ ALTER PROCEDURE [common].[uspFiServItemDailyReport](
 AS
 BEGIN
 	SET NOCOUNT ON;
-	/*Nothing is using this table and can be removed*/
+	/*Testing*/
+--declare @piOrgId INT = 180467
+--	,@pdtStartDate DATETIME2(7) = '2025-02-19 00:00:00.0000000'
+--	,@pdtEndDate DATETIME2(7) = '2025-02-20 00:00:00.0000000'
+
 	drop table if exists #FiServItemDailyReport
+	drop table if exists #tblFiServDetail
 	CREATE TABLE #FiServItemDailyReport(
 		 LevelId int
 		,ParentId int
@@ -61,6 +66,11 @@ BEGIN
 		,DateActivated datetime2(7)
 		,ChannelName nvarchar(50)
 	);
+
+CREATE TABLE #tblFiServDetail (
+    Txt NVARCHAR(MAX)
+);
+
 
 	DECLARE @iOrgId int = @piOrgId
 		,@dtStartDate datetime2(7) = @pdtStartDate
@@ -85,22 +95,45 @@ BEGIN
 		FROM [common].[ufnGetReportDatesByClient](@nvOrgName);
 
 	IF @nvOrgName = N'PNC Bank'
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServPNCItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader;
 	ELSE IF @nvOrgName = N'TD Bank'
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServTDBItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader;
 	ELSE IF @nvOrgName = N'MTB Bank'
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServMTBItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader;
 	ELSE IF @nvOrgName = N'FTB Bank'
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServFTBItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader;
 	ELSE IF @nvOrgName = N'FNBPA Bank'
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServFNBPAItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader;
 	ELSE IF @nvOrgName = N'KeyBank Client'
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServKEYItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader;
 	ELSE IF @nvOrgName = N'Truist Client' --2023-08-30
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServTFBItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader; 
 	ELSE IF @nvOrgName = N'BMO Harris Client' --2024-04-03
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServBMOItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader; 
 	ELSE IF @nvOrgName = N'Commerce Bank' --2024-10-16
+		INSERT INTO #tblFiServDetail (Txt)
 		EXECUTE [common].[uspFiServCMBItemDailyReport] @piOrgId = @iOrgId, @pdtStartDate = @dtStartDate, @pdtEndDate = @dtEndDate, @pnvHeader = @nvHeader; 
 	--ELSE IF Add new client here 
+
+
+--Output for SSIS Package
+IF @piOrgId IN (181434, 163769, 180467, 172436, 179612, 100008, 100009, 100010, 179912) 
+BEGIN
+    SELECT Txt FROM #tblFiServDetail ORDER BY Txt DESC;
+END
+ELSE 
+BEGIN
+    SELECT @nvHeader AS Txt
+    UNION ALL
+    SELECT Txt FROM #tblFiServDetail;
+END
+
 END
