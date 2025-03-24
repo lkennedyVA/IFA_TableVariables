@@ -96,6 +96,9 @@ END;
         SmallItemFlag NVARCHAR(1)
     );
 
+			--set @pdtStartDate = '2025-03-04 20:00:00.0000000'
+			--set @pdtEndDate = '2025-03-05 19:59:59.997'
+
     -- Declare local variables
     DECLARE @iOrgId INT = @piOrgId,
             @dtStartDate DATETIME2(7) = @pdtStartDate,
@@ -155,9 +158,11 @@ END;
     CLOSE SYMMETRIC KEY VALIDSYMKEY;
 
     -- Output final formatted result
-    SELECT @nvHeader AS Txt
+SELECT Txt
+FROM (
+    SELECT 0 AS SortOrder, @nvHeader AS Txt, NULL AS RowID
     UNION ALL
-    SELECT Txt
+    SELECT 1 AS SortOrder, Txt, RowID
     FROM (
         SELECT 
             CONVERT(NVARCHAR(27), DateActivated) + ',' +
@@ -173,7 +178,10 @@ END;
             CONVERT(NVARCHAR(25), ItemAmount) + ',' +
             NotEligible + ',' +
             CarveOut + ',' +
-            SmallItemFlag AS Txt
+            SmallItemFlag AS Txt,
+            RowID
         FROM #tblFiServDetailKEY
-    ) a;
+    ) a
+) b
+ORDER BY SortOrder, RowID
 END;

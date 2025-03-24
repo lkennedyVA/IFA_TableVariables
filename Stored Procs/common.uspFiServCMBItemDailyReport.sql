@@ -36,7 +36,17 @@ ALTER PROCEDURE [common].[uspFiServCMBItemDailyReport](
 )
 AS
 BEGIN
-    SET NOCOUNT ON;
+SET NOCOUNT ON;  
+SET FMTONLY OFF;  
+SET ANSI_WARNINGS OFF;  
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+		/*Testing*/
+ --declare   @piOrgId INT = 181434,
+ --   @pdtStartDate DATETIME2(7) = NULL,
+ --   @pdtEndDate DATETIME2(7) = NULL,
+ --   @pnvHeader NVARCHAR(4000) =  N'DateActivated,OrgId,TransactionKey,ClientRequestId,ClientRequestId2,Customer Identifier,ClientItem ID,TransactionItemID,Item Rule Break Code,Client Response,Check Amount,NotEligible,CarveOut,Demo'
+
 
 -- Metadata definition for SSIS to ensure column structure
 IF 1 = 0
@@ -81,7 +91,7 @@ END;
 
     -- Create temp table for detailed transaction data
     CREATE TABLE #tblFiServDetailCMB (
-        RowId INT IDENTITY(1,1),
+        RowId INT IDENTITY(1,1) PRIMARY KEY,
         DateActivated DATETIME2(7),
         OrgId INT,
         TransactionKey NVARCHAR(25),
@@ -99,6 +109,8 @@ END;
         RtlaScore NVARCHAR(25)
     );
 
+			--set @pdtStartDate = '2025-03-03 20:00:00.0000000'
+			--set @pdtEndDate = '2025-03-04 19:59:59.997'
     -- Declare local variables
     DECLARE @iOrgId INT = @piOrgId,
             @dtStartDate DATETIME2(7) = @pdtStartDate,
@@ -163,9 +175,11 @@ END;
     CLOSE SYMMETRIC KEY VALIDSYMKEY;
 
     -- Output final formatted result
-    SELECT @nvHeader AS Txt
+SELECT Txt
+FROM (
+    SELECT 0 AS SortOrder, @nvHeader AS Txt, NULL AS RowID
     UNION ALL
-    SELECT Txt
+    SELECT 1 AS SortOrder, Txt, RowID
     FROM (
         SELECT 
             CONVERT(NVARCHAR(27), DateActivated) + ',' +
@@ -182,7 +196,11 @@ END;
             NotEligible + ',' +
             CarveOut + ',' +
             SmallItemFlag + ',' +
-            RtlaScore AS Txt
+		    CONVERT(NVARCHAR(25), RtlaScore) AS Txt,
+            RowID
         FROM #tblFiServDetailCMB
-    ) a;
-END;
+    ) a
+) b
+ORDER BY SortOrder, RowID
+
+END

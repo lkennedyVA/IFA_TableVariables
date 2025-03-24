@@ -35,7 +35,16 @@ ALTER PROCEDURE [common].[uspFiServBMOItemDailyReport](
 )
 AS
 BEGIN
-    SET NOCOUNT ON;
+SET NOCOUNT ON;  
+SET FMTONLY OFF;  
+SET ANSI_WARNINGS OFF;  
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+	/*Testing*/
+ --declare   @piOrgId INT = 180467,
+ --   @pdtStartDate DATETIME2(7) = NULL,
+ --   @pdtEndDate DATETIME2(7) = NULL,
+ --   @pnvHeader NVARCHAR(4000) =  N'DateActivated,OrgId,TransactionKey,ClientRequestId,ClientRequestId2,Customer Identifier,ClientItem ID,TransactionItemID,Item Rule Break Code,Client Response,Check Amount,NotEligible,CarveOut,Demo'
 
 -- Metadata definition for SSIS to ensure column structure
 IF 1 = 0
@@ -79,7 +88,7 @@ END;
 
     -- Create temp table for detailed transaction data
     CREATE TABLE #tblFiServDetailBMO (
-        RowId INT IDENTITY(1,1),
+        RowID INT IDENTITY(1,1) PRIMARY KEY,
         DateActivated DATETIME2(7),
         OrgId INT,
         TransactionKey NVARCHAR(25),
@@ -96,12 +105,16 @@ END;
         SmallItemFlag NVARCHAR(1)
     );
 
+			 --set @pdtStartDate = '2025-03-04 20:00:00.0000000'
+			 --set @pdtEndDate = '2025-03-05 19:59:59.997'
     -- Declare local variables
     DECLARE @iOrgId INT = @piOrgId,
             @dtStartDate DATETIME2(7) = @pdtStartDate,
             @dtEndDate DATETIME2(7) = @pdtEndDate,
             @iOrgDimensionId INT = [common].[ufnDimension]('Organization'),
             @nvHeader NVARCHAR(4000) = @pnvHeader;
+
+
 
     -- Populate temporary table with organizational hierarchy data
     INSERT INTO #FiServItemDailyReportBMO (LevelId, ParentId, OrgId, OrgCode, OrgName, ExternalCode, TypeId, [Type], StatusFlag, DateActivated, ChannelName)
@@ -155,9 +168,12 @@ END;
     CLOSE SYMMETRIC KEY VALIDSYMKEY;
 
     -- Output final formatted result
-    SELECT @nvHeader AS Txt
+	--declare @nvHeader nvarchar(4000) =  N'DateActivated,OrgId,TransactionKey,ClientRequestId,ClientRequestId2,Customer Identifier,ClientItem ID,TransactionItemID,Item Rule Break Code,Client Response,Check Amount,NotEligible,CarveOut,Demo'
+SELECT Txt
+FROM (
+    SELECT 0 AS SortOrder, @nvHeader AS Txt, NULL AS RowID
     UNION ALL
-    SELECT Txt
+    SELECT 1 AS SortOrder, Txt, RowID
     FROM (
         SELECT 
             CONVERT(NVARCHAR(27), DateActivated) + ',' +
@@ -173,7 +189,12 @@ END;
             CONVERT(NVARCHAR(25), ItemAmount) + ',' +
             NotEligible + ',' +
             CarveOut + ',' +
-            SmallItemFlag AS Txt
+            SmallItemFlag AS Txt,
+            RowID
         FROM #tblFiServDetailBMO
-    ) a;
-END;
+    ) a
+) b
+ORDER BY SortOrder, RowID;
+
+
+END
