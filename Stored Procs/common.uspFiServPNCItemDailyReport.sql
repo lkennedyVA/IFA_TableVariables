@@ -36,6 +36,13 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+/*Testing*/
+--declare
+--    @piOrgId INT = 100009,
+--    @pdtStartDate DATETIME2(7),
+--    @pdtEndDate DATETIME2(7),
+--    @pnvHeader NVARCHAR(4000) = N'DateActivated,OrgId,TransactionKey,ClientRequestId,ClientRequestId2,Customer Identifier,ClientItem ID,TransactionItemID,Item Rule Break Code,Client Response,Check Amount,NotEligible,CarveOut,Demo,Channel'
+
 -- Metadata definition for SSIS to ensure column structure
 IF 1 = 0
 BEGIN
@@ -97,6 +104,9 @@ END;
         ChannelName NVARCHAR(50)
     );
 
+			--set @pdtStartDate = '2025-03-07 21:00:00.0000000'
+			--set @pdtEndDate = '2025-03-08 20:59:59.9999999'
+
     -- Declare local variables
     DECLARE @iOrgId INT = @piOrgId,
             @dtStartDate DATETIME2(7) = @pdtStartDate,
@@ -121,47 +131,43 @@ END;
         CustomerIdentifier, ClientItemID, TransactionItemID, ItemRuleBreakCode, 
         ClientResponse, ItemAmount, NotEligible, CarveOut, SmallItemFlag, ChannelName
     )
-    SELECT TOP 1000000 
-        p.DateActivated,
-        p.OrgId,
-        p.ProcessKey,
-        ClientRequestId,
-        ClientRequestId2,
-        CONVERT(NVARCHAR(100), p.CustomerId),
-        i.ClientItemId,
-        i.ItemKey,
-        i.Rulebreak,
-        ca.Code,
-        i.CheckAmount,
-        CONVERT(NVARCHAR(1), CASE 
-            WHEN neaco.NotEligible = 0 AND p.ItemCount > 1 AND dol.ChannelName = 'ATM' THEN 1 
-            ELSE neaco.NotEligible END),
-        CONVERT(NVARCHAR(1), neaco.CarveOut),
-        CONVERT(NVARCHAR(1), CASE 
-            WHEN CheckAmount < 25.00 AND i.PayerId IN (
-                45511602, 46749418, 57286220, 75780082, 49162868, 49162869, 49162870,
-                49162871, 44140511, 72675662, 62086301, 75019594, 65055313, 56231928,
-                56231929, 56208484, 60818649, 60818650, 60818651, 63767456, 72897759, 44983753
-            ) 
-            THEN 1 ELSE 0 END),
-        dol.ChannelName
-    FROM [ifa].[Process] p WITH (READUNCOMMITTED)
-    INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
-    INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
-    INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
-    INNER JOIN #FiServItemDailyReportPNC dol ON p.OrgId = dol.OrgId
-    CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId, i.ItemId) neaco 
-    WHERE p.DateActivated >= @dtStartDate 
-      AND p.DateActivated < @dtEndDate
-    ORDER BY i.ItemId;
+SELECT TOP 1000000 
+		p.DateActivated,
+		p.OrgId,
+		p.ProcessKey,
+		ClientRequestId,
+		ISNULL(ClientRequestId2,''),
+		p.CustomerId,
+		i.ClientItemId,
+		i.ItemKey,
+		i.Rulebreak,
+		ca.Code,
+		i.CheckAmount,
+		CASE WHEN neaco.NotEligible = 0 AND p.ItemCount > 1 AND dol.ChannelName = 'ATM' THEN 1 ELSE neaco.NotEligible END,
+		neaco.CarveOut,
+		CASE WHEN CheckAmount < 25.00 AND i.PayerId in (45511602,46749418,57286220,75780082,49162868,49162869,49162870
+			,49162871,44140511,72675662,62086301,75019594,65055313,56231928,56231929,56208484,60818649
+			,60818650,60818651,63767456,72897759,44983753) THEN 1 ELSE 0 END,
+		dol.ChannelName
+	FROM [ifa].[Process] p WITH (READUNCOMMITTED)
+	INNER JOIN [ifa].[Item] i WITH (READUNCOMMITTED) ON p.ProcessId = i.ProcessId
+	INNER JOIN [payer].[Payer] py WITH (READUNCOMMITTED) ON i.PayerId = py.PayerId
+	INNER JOIN [common].[ClientAccepted] ca WITH (READUNCOMMITTED) ON i.ClientAcceptedId = ca.ClientAcceptedId
+	INNER JOIN #FiServItemDailyReportPNC dol ON p.OrgId = dol.OrgId
+	CROSS APPLY [common].[ufnNotEligibleAndCarveOutILTFDeux](@iOrgId,i.ItemId) neaco 
+	WHERE p.DateActivated >= @dtStartDate 
+		AND p.DateActivated < @dtEndDate
+	ORDER BY i.ItemId;
 
     -- Close the symmetric key
     CLOSE SYMMETRIC KEY VALIDSYMKEY;
 
     -- Output final formatted result
-    SELECT @nvHeader AS Txt
+SELECT Txt
+FROM (
+    SELECT 0 AS SortOrder, @nvHeader AS Txt, NULL AS RowID
     UNION ALL
-    SELECT Txt
+    SELECT 1 AS SortOrder, Txt, RowID
     FROM (
         SELECT 
             CONVERT(NVARCHAR(27), DateActivated) + ',' +
@@ -175,12 +181,13 @@ END;
             CONVERT(NVARCHAR(25), ItemRuleBreakCode) + ',' +
             CONVERT(NVARCHAR(25), ClientResponse) + ',' +
             CONVERT(NVARCHAR(25), ItemAmount) + ',' +
-            CONVERT(NVARCHAR(1), NotEligible) + ',' +
-            CONVERT(NVARCHAR(1), CarveOut) + ',' +
-            CONVERT(NVARCHAR(1), SmallItemFlag) + ',' +
-            ChannelName AS Txt
+            NotEligible + ',' +
+            CarveOut + ',' +
+            SmallItemFlag  +','+
+			CONVERT(NVARCHAR(25), ChannelName)AS Txt,
+            RowID
         FROM #tblFiServDetailPNC
-    ) a;
+    ) a
+) b
+ORDER BY SortOrder, RowID
 END;
-
-

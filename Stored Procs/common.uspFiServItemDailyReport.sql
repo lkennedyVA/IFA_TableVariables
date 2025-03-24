@@ -45,11 +45,22 @@ ALTER PROCEDURE [common].[uspFiServItemDailyReport](
 )
 AS
 BEGIN
-	SET NOCOUNT ON;
+SET NOCOUNT ON;  
+SET FMTONLY OFF;  
+SET ANSI_WARNINGS OFF;  
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+
 	/*Testing*/
---declare @piOrgId INT = 180467
---	,@pdtStartDate DATETIME2(7) = '2025-02-19 00:00:00.0000000'
---	,@pdtEndDate DATETIME2(7) = '2025-02-20 00:00:00.0000000'
+--declare @piOrgId INT = 172436
+--	,@pdtStartDate DATETIME2(7) = NULL
+--	,@pdtEndDate DATETIME2(7) = NULL
+
+    IF 1 = 0
+    BEGIN
+        SELECT CAST(NULL AS NVARCHAR(MAX)) AS Txt;
+        RETURN;
+    END;
 
 	drop table if exists #FiServItemDailyReport
 	drop table if exists #tblFiServDetail
@@ -68,6 +79,7 @@ BEGIN
 	);
 
 CREATE TABLE #tblFiServDetail (
+	RowID INT IDENTITY(1,1) PRIMARY KEY Clustered,
     Txt NVARCHAR(MAX)
 );
 
@@ -125,15 +137,22 @@ CREATE TABLE #tblFiServDetail (
 
 
 --Output for SSIS Package
-IF @piOrgId IN (181434, 163769, 180467, 172436, 179612, 100008, 100009, 100010, 179912) 
-BEGIN
-    SELECT Txt FROM #tblFiServDetail ORDER BY Txt DESC;
-END
-ELSE 
-BEGIN
-    SELECT @nvHeader AS Txt
+--declare @piOrgId INT = 180467
+;WITH cte_FiServDetail AS (
+    SELECT Txt, RowID
+    FROM #tblFiServDetail
+    WHERE @piOrgId IN (181434, 163769, 180467, 172436, 179612, 100008, 100009, 100010, 179912)
+
     UNION ALL
-    SELECT Txt FROM #tblFiServDetail;
-END
+
+    -- Ensure at least one row is always returned, even when no data exists
+    SELECT CAST(NULL AS NVARCHAR(MAX)) AS Txt, NULL AS RowID
+    WHERE NOT EXISTS (SELECT 1 FROM #tblFiServDetail)
+)
+SELECT Txt
+FROM cte_FiServDetail
+ORDER BY RowID ASC;
+
+
 
 END

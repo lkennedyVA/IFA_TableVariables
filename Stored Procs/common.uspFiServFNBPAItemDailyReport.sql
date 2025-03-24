@@ -35,7 +35,10 @@ ALTER PROCEDURE [common].[uspFiServFNBPAItemDailyReport](
 )
 AS
 BEGIN
-    SET NOCOUNT ON;
+SET NOCOUNT ON;  
+SET FMTONLY OFF;  
+SET ANSI_WARNINGS OFF;  
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
 -- Metadata definition for SSIS to ensure column structure
 IF 1 = 0
@@ -96,6 +99,8 @@ END;
         SmallItemFlag NVARCHAR(1)
     );
 
+			--set @pdtStartDate = '2025-03-04 20:00:00.0000000'
+			--set @pdtEndDate = '2025-03-05 19:59:59.997'
     -- Declare local variables
     DECLARE @iOrgId INT = @piOrgId,
             @dtStartDate DATETIME2(7) = @pdtStartDate,
@@ -155,16 +160,18 @@ END;
     CLOSE SYMMETRIC KEY VALIDSYMKEY;
 
     -- Output final formatted result
-    SELECT @nvHeader AS Txt
+SELECT Txt
+FROM (
+    SELECT 0 AS SortOrder, @nvHeader AS Txt, NULL AS RowID
     UNION ALL
-    SELECT Txt
+    SELECT 1 AS SortOrder, Txt, RowID
     FROM (
         SELECT 
             CONVERT(NVARCHAR(27), DateActivated) + ',' +
             CONVERT(NVARCHAR(10), OrgId) + ',' +
             CONVERT(NVARCHAR(25), TransactionKey) + ',' +
-            CONVERT(NVARCHAR(50), ClientRequestId) + ',' +
-            CONVERT(NVARCHAR(50), ISNULL(ClientRequestId2, '')) + ',' +
+            CONVERT(NVARCHAR(25), ClientRequestId) + ',' +
+            CONVERT(NVARCHAR(25), ISNULL(ClientRequestId2, '')) + ',' +
             CONVERT(NVARCHAR(100), CustomerIdentifier) + ',' +
             CONVERT(NVARCHAR(50), ClientItemID) + ',' +
             CONVERT(NVARCHAR(25), TransactionItemID) + ',' +
@@ -173,7 +180,10 @@ END;
             CONVERT(NVARCHAR(25), ItemAmount) + ',' +
             NotEligible + ',' +
             CarveOut + ',' +
-            SmallItemFlag AS Txt
+            SmallItemFlag AS Txt,
+            RowID
         FROM #tblFiServDetailFNBPA
-    ) a;
+    ) a
+) b
+ORDER BY SortOrder, RowID
 END;
